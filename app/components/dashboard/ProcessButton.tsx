@@ -20,9 +20,11 @@ export default function ProcessButton({
     try {
       const res = await fetchWithAuth(API_ROUTES.processCall, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          filename: [selectedAudio],
+          headers: { 
+            "Content-Type": "application/json",
+            "Accept": "application/json" 
+          },        body: JSON.stringify({
+          filenames: [selectedAudio],
           model_option: "AzureOpenAI",
         }),
       })
