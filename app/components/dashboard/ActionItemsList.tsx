@@ -282,7 +282,7 @@ export default function ActionItemsList({ actionItems, emailSent, audioId, senti
     try {
       // Add audioId as a query parameter if available
       const url = audioId 
-        ? `${API_ROUTES.downloadReport}?audioId=${audioId}`
+        ? `${API_ROUTES.downloadReport}?filename=${audioId}`
         : API_ROUTES.downloadReport;
 
       const response = await fetchWithAuth(url, {
