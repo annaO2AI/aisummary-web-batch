@@ -32,8 +32,8 @@ export default function LayoutWrapper({ children }: { children: ReactNode }) {
   const isSidebarExpanded = !collapsed || hovered
   const sidebarWidth = isSidebarExpanded ? 256 : 64
 
-  // ✅ Show sidebar only on the homepage
-  const showSidebar = pathname === "/"
+  // ✅ Show sidebar on homepage and UploadFiles page
+  const showSidebar = pathname === "/" || pathname === "/UploadFiles"
 
   return (
     <DashboardProvider>
