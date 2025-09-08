@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, ChangeEvent, DragEvent } from 'react';
 import { Upload, File, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
-
+import Image from 'next/image';
 // Type definitions
 interface SuccessResponse {
   filename: string;
@@ -102,48 +102,78 @@ const AudioUploadComponent: React.FC = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">Upload Audio File</h2>
-        <p className="text-gray-600">Upload your audio file for processing</p>
+    <div className="max-w-2xl mx-auto p-6">
+      <div className="text-left mb-6">
+        <h2 className="text-2xl font-bold ot-title">Upload Audio File</h2>
+        <p className="font-sm osubtitle">Upload your audio file for processing</p>
       </div>
 
       {/* File Upload Area */}
-      {!file && (
-        <div
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors cursor-pointer"
-        >
-          <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <p className="text-lg text-gray-600 mb-2">
-            Drag and drop your audio file here
-          </p>
-          <p className="text-sm text-gray-500 mb-4">or</p>
-          <label className="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer transition-colors">
-            <span>Browse Files</span>
-            <input
-              type="file"
-              accept="audio/*"
-              onChange={handleFileChange}
-              className="hidden"
-            />
-          </label>
-          <p className="text-xs text-gray-500 mt-2">
-            Supported formats: MP3, WAV, M4A, OGG, FLAC
-          </p>
+       {!response && (
+        <div>
+          <div
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-blue-400 transition-colors cursor-pointer"
+            >
+              {/* <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" /> */}
+              <Image 
+                  src="/browseafile-audio.svg" 
+                  alt="Grouse files" 
+                  width={188} 
+                  height={81} 
+                  className="max-w-md m-auto mb-6"
+              />
+              {/* <p className="text-lg text-gray-600 mb-2">
+                Drag and drop your audio file here
+              </p>
+              <p className="text-sm text-gray-500 mb-4">or</p> */}
+              <label className="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer transition-colors">
+                <span>Browse Files</span>
+                <input
+                  type="file"
+                  accept="audio/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+              </label>
+              {/* <p className="text-xs text-gray-500 mt-2">
+                Supported formats: MP3, WAV, M4A, OGG, FLAC
+              </p> */}
+              <p className="text-xs text-gray-500 mt-2 osubtitle">
+                *.PDF, *.DOC format are supported. Max 10 MB
+              </p>
+          </div>
+          <div className="pt-6 rounded-lg">
+              <h2 className="text-md font-semibold mb-1 osubtitle">Manually add Incident Number</h2>
+              <input
+                type="text"
+                placeholder="Enter Incident Number"
+                className="w-full p-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              {!file && !response && (
+                <div className="flex justify-end space-x-4">
+                  <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">
+                    Cancel
+                  </button>
+                  <button disabled className="flex gap-3px-4 py-2 px-4 items-center bg-blue-200 text-white rounded-md hover:bg-blue-200">
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload file
+                  </button>
+                </div>
+                )}
+          </div>
         </div>
-      )}
-
+       )}
       {/* Selected File Display */}
       {file && !response && (
-        <div className="bg-gray-50 rounded-lg p-4 mb-4">
-          <div className="flex items-center justify-between">
+        <div className="rounded-lg mb-4">
+          <div className="self-start flex justify-between bg-white border-2 border-dashed border-blue-300 rounded-lg p-4 text-center hover:border-blue-400 transition-colors cursor-pointer mb-4">
             <div className="flex items-center space-x-3">
               <File className="h-8 w-8 text-blue-500" />
               <div>
-                <p className="font-medium text-gray-800">{file.name}</p>
-                <p className="text-sm text-gray-600">
+                <p className="font-medium ot-title">{file.name}</p>
+                <p className="text-sm text-left  osubtitle">
                   {formatFileSize(file.size)} • {file.type}
                 </p>
               </div>
@@ -153,15 +183,23 @@ const AudioUploadComponent: React.FC = () => {
               className="text-gray-500 hover:text-red-500 text-sm"
               type="button"
             >
-              Remove
+              <svg width="26" height="20" viewBox="0 0 26 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M13.5859 2C18.0042 2 21.5859 5.58172 21.5859 10C21.5859 14.4183 18.0042 18 13.5859 18C9.16766 18 5.58594 14.4183 5.58594 10C5.58594 5.58172 9.16766 2 13.5859 2ZM13.5859 3C9.71994 3 6.58594 6.13401 6.58594 10C6.58594 13.866 9.71994 17 13.5859 17C17.4519 17 20.5859 13.866 20.5859 10C20.5859 6.13401 17.4519 3 13.5859 3ZM11.3954 7.11372L11.4646 7.17157L13.5859 9.29289L15.7073 7.17157C15.8808 6.99801 16.1502 6.97872 16.3451 7.11372L16.4144 7.17157C16.5879 7.34514 16.6072 7.61456 16.4722 7.80943L16.4144 7.87868L14.293 10L16.4144 12.1213C16.5879 12.2949 16.6072 12.5643 16.4722 12.7592L16.4144 12.8284C16.2408 13.002 15.9714 13.0213 15.7765 12.8863L15.7073 12.8284L13.5859 10.7071L11.4646 12.8284C11.2911 13.002 11.0216 13.0213 10.8268 12.8863L10.7575 12.8284C10.5839 12.6549 10.5647 12.3854 10.6997 12.1906L10.7575 12.1213L12.8788 10L10.7575 7.87868C10.5839 7.70511 10.5647 7.43569 10.6997 7.24082L10.7575 7.17157C10.9311 6.99801 11.2005 6.97872 11.3954 7.11372Z" fill="#8180AA"/>
+              </svg>
             </button>
           </div>
-          
-          <div className="mt-4 flex space-x-3">
+          <div className="flex justify-end space-x-4">
+             <button
+              onClick={resetUpload}
+              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors"
+              type="button"
+            >
+              Cancel
+            </button>
             <button
               onClick={uploadFile}
               disabled={uploading}
-              className="flex items-center px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               type="button"
             >
               {uploading ? (
@@ -176,48 +214,49 @@ const AudioUploadComponent: React.FC = () => {
                 </>
               )}
             </button>
-            <button
-              onClick={resetUpload}
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors"
-              type="button"
-            >
-              Cancel
-            </button>
+           
           </div>
         </div>
       )}
 
       {/* Success Response */}
       {response && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
-          <div className="flex items-center mb-3">
-            <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-            <h3 className="font-medium text-green-800">Upload Successful!</h3>
+        <div className="bg-white border border-gray-200 rounded-lg p-10 mb-4 text-center" >
+          <div className="">
+            <Image 
+                  src="/Uploadfile-Successfully.svg" 
+                  alt="Grouse files" 
+                  width={260} 
+                  height={197} 
+                  className="max-w-md m-auto "
+              />
+            <h3 className="font-medium text-center font-bold ot-title text-2xl">Upload Successful!</h3>
           </div>
           <div className="space-y-2 text-sm">
-            <div>
-              <span className="font-medium text-green-800">Filename:</span>
-              <span className="text-green-700 ml-2">{response.filename}</span>
+            <div className='text-center osubtitle'>
+              <span className="font-medium osubtitle">Filename:</span>
+              <span className="osubtitle ml-2">{response.filename}</span>
             </div>
-            <div>
-              <span className="font-medium text-green-800">URL:</span>
+            <div className='text-center osubtitle'>
+              <span className="font-medium osubtitle">URL:</span>
               <a 
                 href={response.url} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-800 underline ml-2 break-all"
+                className="osubtitle hover:text-blue-800 underline ml-2 break-all"
               >
-                {response.url}
+                {/* {response.url} */}
+                File Link
               </a>
             </div>
-            <div>
-              <span className="font-medium text-green-800">Message:</span>
-              <span className="text-green-700 ml-2">{response.message}</span>
+            <div className='text-center osubtitle'>
+              <span className="font-medium osubtitle">Message:</span>
+              <span className="osubtitle ml-2">{response.message}</span>
             </div>
           </div>
           <button
             onClick={resetUpload}
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors m-auto"
             type="button"
           >
             Upload Another File
@@ -232,7 +271,7 @@ const AudioUploadComponent: React.FC = () => {
             <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
             <div>
               <h3 className="font-medium text-red-800">Upload Failed</h3>
-              <p className="text-red-700 text-sm mt-1">{error}</p>
+              <p className="text-red-700 text-left text-sm mt-1">{error}</p>
             </div>
           </div>
           <button
