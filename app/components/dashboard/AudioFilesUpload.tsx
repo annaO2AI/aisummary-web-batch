@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, ChangeEvent, DragEvent } from "react";
-import { Upload, File, AlertCircle, Loader2, CheckCircle } from "lucide-react";
+import { Upload, File, AlertCircle, Loader2 } from "lucide-react";
 import Image from "next/image";
 
 // Type definitions
@@ -14,23 +14,13 @@ interface ErrorResponse {
   detail: string;
 }
 
-interface IncidentResponse {
-  incident_number: string;
-  valid: boolean;
-}
-
 type ApiResponse = SuccessResponse | ErrorResponse;
 
-const AudioUploadComponent: React.FC = () => {
+const AudioFilesUploadComponent: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [response, setResponse] = useState<SuccessResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [incidentNumber, setIncidentNumber] = useState<string>("");
-  const [isIncidentValid, setIsIncidentValid] = useState<boolean | null>(null);
-  const [isValidating, setIsValidating] = useState<boolean>(false);
-  const [incidentSuccess, setIncidentSuccess] = useState<string | null>(null);
-  const [incidentError, setIncidentError] = useState<string | null>(null);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const selectedFile = event.target.files?.[0];
@@ -62,72 +52,9 @@ const AudioUploadComponent: React.FC = () => {
     event.preventDefault();
   };
 
-  const validateIncidentNumber = async (incNumber: string): Promise<void> => {
-    if (!incNumber) {
-      setIncidentError("Please enter an incident number.");
-      setIsIncidentValid(null);
-      return;
-    }
-
-    setIsValidating(true);
-    setIncidentSuccess(null);
-    setIncidentError(null);
-
-    try {
-      const res = await fetch(
-        `https://ai-call-summary-ap-batch-fjfxdsdhdkd5b7bt.centralus-01.azurewebsites.net/check-incidient-number?inc_number=${encodeURIComponent(
-          incNumber
-        )}`,
-        {
-          method: "GET",
-          headers: {
-            accept: "application/json",
-          },
-        }
-      );
-
-      const data: IncidentResponse = await res.json();
-
-      if (res.ok && data.incident_number === incNumber) {
-        setIsIncidentValid(data.valid);
-        if (data.valid) {
-          setIncidentSuccess("Incident number is valid.");
-        } else {
-          setIncidentError("Please enter a valid Incident Number.");
-        }
-      } else {
-        setIsIncidentValid(false);
-        setIncidentError("Please enter a valid Incident Number.");
-      }
-    } catch (err) {
-      setIsIncidentValid(false);
-      setIncidentError("Error validating incident number. Please try again.");
-    } finally {
-      setIsValidating(false);
-    }
-  };
-
-  const handleIncidentChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    const value = event.target.value;
-    setIncidentNumber(value);
-    setIsIncidentValid(null);
-    setIncidentSuccess(null);
-    setIncidentError(null);
-  };
-
-  const handleIncidentBlur = (): void => {
-    if (incidentNumber) {
-      validateIncidentNumber(incidentNumber);
-    } else {
-      setIncidentError("Please enter an incident number.");
-    }
-  };
-
   const uploadFile = async (): Promise<void> => {
-    if (!file || isIncidentValid === false || !incidentNumber) {
-      if (isIncidentValid === false || !incidentNumber) {
-        setIncidentError("Please enter a valid Incident Number.");
-      }
+    if (!file) {
+      setError("Please select an audio file.");
       return;
     }
 
@@ -171,10 +98,6 @@ const AudioUploadComponent: React.FC = () => {
     setFile(null);
     setResponse(null);
     setError(null);
-    setIncidentNumber("");
-    setIsIncidentValid(null);
-    setIncidentSuccess(null);
-    setIncidentError(null);
   };
 
   const formatFileSize = (bytes: number): string => {
@@ -221,46 +144,6 @@ const AudioUploadComponent: React.FC = () => {
             </p>
           </div>
           <div className="pt-6 rounded-lg">
-            <h2 className="text-md font-semibold mb-1 osubtitle">
-              Manually add Incident Number
-            </h2>
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Enter Incident Number"
-                value={incidentNumber}
-                onChange={handleIncidentChange}
-                onBlur={handleIncidentBlur}
-                className={`w-full p-2 border rounded-md mb-2 focus:outline-none focus:ring-2 ${
-                  isIncidentValid === false
-                    ? "border-red-500 focus:ring-red-500"
-                    : isIncidentValid === true
-                    ? "border-green-500 focus:ring-green-500"
-                    : "border-gray-300 focus:ring-blue-500"
-                }`}
-              />
-              {isValidating && (
-                <Loader2 className="absolute right-2 top-2 h-5 w-5 animate-spin text-gray-500" />
-              )}
-            </div>
-            {/* Incident Success Message */}
-            {incidentSuccess && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
-                <div className="flex items-center">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                  <p className="text-green-700 text-sm">{incidentSuccess}</p>
-                </div>
-              </div>
-            )}
-            {/* Incident Error Message */}
-            {incidentError && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
-                <div className="flex items-center">
-                  <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
-                  <p className="text-red-700 text-sm">{incidentError}</p>
-                </div>
-              </div>
-            )}
             {!file && !response && (
               <div className="flex justify-end space-x-4">
                 <button
@@ -270,11 +153,21 @@ const AudioUploadComponent: React.FC = () => {
                   Cancel
                 </button>
                 <button
-                  disabled={uploading || isIncidentValid === false || !incidentNumber}
+                  onClick={uploadFile}
+                  disabled={uploading}
                   className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  <Upload className="h-4 w-4 mr-2" />
-                  Upload File
+                  {uploading ? (
+                    <>
+                      <Loader2 className="animate-spin h-4 w-4 mr-2" />
+                      Uploading...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="h-4 w-4 mr-2" />
+                      Upload File
+                    </>
+                  )}
                 </button>
               </div>
             )}
@@ -324,7 +217,7 @@ const AudioUploadComponent: React.FC = () => {
             </button>
             <button
               onClick={uploadFile}
-              disabled={uploading || isIncidentValid === false || !incidentNumber}
+              disabled={uploading}
               className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               type="button"
             >
@@ -413,4 +306,4 @@ const AudioUploadComponent: React.FC = () => {
   );
 };
 
-export default AudioUploadComponent;
+export default AudioFilesUploadComponent;

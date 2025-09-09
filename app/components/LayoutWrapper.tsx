@@ -33,7 +33,7 @@ export default function LayoutWrapper({ children }: { children: ReactNode }) {
   const sidebarWidth = isSidebarExpanded ? 256 : 64
 
   // ✅ Show sidebar on homepage and UploadFiles page
-  const showSidebar = pathname === "/" || pathname === "/UploadFiles"
+  const showSidebar = pathname === "/" || pathname === "/UploadFiles" || pathname === "/UploadAudioFiles" || pathname === "/audio-upload"
 
   return (
     <DashboardProvider>

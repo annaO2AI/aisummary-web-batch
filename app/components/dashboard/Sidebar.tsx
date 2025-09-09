@@ -54,6 +54,12 @@ export default function Sidebar({
       icon: "AiIcon",
       href: "/UploadFiles",
     },
+       {
+      id: "AudioFilesUpload",
+      label: "Audio Files Upload",
+      icon: "AiIcon",
+      href: "/audio-upload",
+    },
   ];
 
   return (
