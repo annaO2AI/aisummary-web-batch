@@ -66,7 +66,7 @@ export default function Sidebar({
     <aside
       className={clsx(
         "h-screen fixed top-0 left-0 bg-white border-r shadow transition-all duration-300 ease-in-out",
-        isExpanded ? "w-64" : "w-16"
+        isExpanded ? "w-[306px]" : "w-16"
       )}
     >
       <div className="flex justify-end p-3">
@@ -79,7 +79,7 @@ export default function Sidebar({
       </div>
 
       {isExpanded && (
-        <div className="p-4 space-y-4 mt-6 border-t pt-4">
+        <div className="p-4 space-y-4 mt-6 border-t pt-4 batch-summary">
           <Link href="/" className=" flex gap-3 items-center block w-full px-4 py-2 text-left hover:bg-gray-100 rounded-md transition-colors">
             <span>
                 <svg width="15" height="20" viewBox="0 0 15 20" fill="none" xmlns="http://www.w3.org/2000/svg">

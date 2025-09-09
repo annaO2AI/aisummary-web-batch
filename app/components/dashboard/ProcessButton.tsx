@@ -50,19 +50,20 @@ export default function ProcessButton({
     : `Generate Report (${fileCount} file${fileCount > 1 ? 's' : ''})`
 
   return (
-    <div className="flex justify-center mt-4 dashordmain-custom-stylewrap">
-      <button
-        onClick={handleProcess}
-        className="mt-4 px-2 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 dashordmain-custom-style"
-        disabled={loading}
-      >
-        {buttonText}
-      </button>
-      {selectedAudio.length > 1 && (
+    <div className="flex justify-center mt-4 dashordmain-custom-stylewrap gap-0 flex-col">
+       {selectedAudio.length > 1 && (
         <p className="text-sm text-gray-600 mt-2">
           Processing {selectedAudio.length} audio files
         </p>
       )}
+      <button
+        onClick={handleProcess}
+        className="mt-1 px-2 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 dashordmain-custom-style"
+        disabled={loading}
+      >
+        {buttonText}
+      </button>
+     
     </div>
   )
 }
