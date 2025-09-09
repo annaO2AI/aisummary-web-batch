@@ -48,12 +48,12 @@ export default function Sidebar({
   };
 
   const menuItems = [
-    {
-      id: "FilesUpload",
-      label: "Files Upload",
-      icon: "AiIcon",
-      href: "/UploadFiles",
-    },
+    // {
+    //   id: "FilesUpload",
+    //   label: "Files Upload",
+    //   icon: "AiIcon",
+    //   href: "/UploadFiles",
+    // },
        {
       id: "AudioFilesUpload",
       label: "Audio Files Upload",
