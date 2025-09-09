@@ -235,7 +235,7 @@ const Dashboard = () => {
             >
                  {formattedResults &&
               formattedResults.map((graphData: any, index: number) => (
-                <div  key={graphData?.id ?? index}>
+                <div className="flex flex-cal gap-6" key={graphData?.id ?? index}>
                   {/* call-info component */}
                   <div className="flex flex-row gap-6">
                     <CallCard
