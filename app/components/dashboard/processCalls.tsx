@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react"
 import { API_ROUTES } from "../../constants/api"
 import { fetchWithAuth } from "../../utils/axios"
 import { X } from "lucide-react"
@@ -31,14 +31,16 @@ interface ApiResponse {
 const CallProcessor: React.FC = () => {
   const [audioMap, setAudioMap] = useState<Record<string, string>>({})
   const [models, setModels] = useState<string[]>([])
-  const [selectedModel, setSelectedModel] = useState<string>('')
-  const [filenames, setFilenames] = useState<string>('')
+  const [selectedModel, setSelectedModel] = useState<string>("")
+  const [filenames, setFilenames] = useState<string>("")
   const [response, setResponse] = useState<ApiResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [isProcessing, setIsProcessing] = useState<boolean>(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+  const [expandedSections, setExpandedSections] = useState<
+    Record<string, boolean>
+  >({
     summary: true,
     sentiment: true,
     purpose: true,
@@ -68,11 +70,11 @@ const CallProcessor: React.FC = () => {
     const fetchModels = async () => {
       try {
         const response = await fetch(
-          'https://ai-call-summary-ap-batch-fjfxdsdhdkd5b7bt.centralus-01.azurewebsites.net/models',
+          "https://ai-call-summary-ap-batch-fjfxdsdhdkd5b7bt.centralus-01.azurewebsites.net/models",
           {
-            method: 'GET',
+            method: "GET",
             headers: {
-              accept: 'application/json',
+              accept: "application/json",
             },
           }
         )
@@ -87,24 +89,26 @@ const CallProcessor: React.FC = () => {
       }
     }
 
-    Promise.all([fetchAudioFiles(), fetchModels()]).finally(() => setIsLoading(false))
+    Promise.all([fetchAudioFiles(), fetchModels()]).finally(() =>
+      setIsLoading(false)
+    )
   }, [])
 
   // Handle click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement
-      if (!target.closest('.audio-selector-dropdown')) {
+      if (!target.closest(".audio-selector-dropdown")) {
         setIsDropdownOpen(false)
       }
     }
 
     if (isDropdownOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
+      document.addEventListener("mousedown", handleClickOutside)
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [isDropdownOpen])
 
@@ -116,7 +120,7 @@ const CallProcessor: React.FC = () => {
 
   // Clear the selected filename
   const clearFile = () => {
-    setFilenames('')
+    setFilenames("")
   }
 
   // Handle form submission to process calls
@@ -127,7 +131,7 @@ const CallProcessor: React.FC = () => {
     setResponse(null)
 
     if (!filenames.trim()) {
-      setError('Please select or enter a filename')
+      setError("Please select or enter a filename")
       setIsProcessing(false)
       return
     }
@@ -138,16 +142,16 @@ const CallProcessor: React.FC = () => {
       model_option: selectedModel,
     }
 
-    console.log('Payload being sent:', JSON.stringify(payload))
+    console.log("Payload being sent:", JSON.stringify(payload))
 
     try {
       const response = await fetch(
-        'https://ai-call-summary-ap-batch-fjfxdsdhdkd5b7bt.centralus-01.azurewebsites.net/process-calls',
+        "https://ai-call-summary-ap-batch-fjfxdsdhdkd5b7bt.centralus-01.azurewebsites.net/process-calls",
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            accept: 'application/json',
-            'Content-Type': 'application/json',
+            accept: "application/json",
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),
         }
@@ -155,14 +159,16 @@ const CallProcessor: React.FC = () => {
 
       if (!response.ok) {
         const errorText = await response.text()
-        console.error('Error response:', errorText)
-        throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`)
+        console.error("Error response:", errorText)
+        throw new Error(
+          `HTTP error! status: ${response.status}, body: ${errorText}`
+        )
       }
 
       const data: ApiResponse = await response.json()
       setResponse(data)
     } catch (err) {
-      setError('Failed to process call')
+      setError("Failed to process call")
       console.error(err)
     } finally {
       setIsProcessing(false)
@@ -189,7 +195,10 @@ const CallProcessor: React.FC = () => {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="model" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="model"
+            className="block text-sm font-medium text-gray-700"
+          >
             Select Model
           </label>
           <select
@@ -238,7 +247,10 @@ const CallProcessor: React.FC = () => {
           )}
 
           <div className="relative audio-selector-dropdown">
-            <label htmlFor="filenames" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="filenames"
+              className="block text-sm font-medium text-gray-700"
+            >
               Filename
             </label>
             <input
@@ -254,19 +266,21 @@ const CallProcessor: React.FC = () => {
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="absolute right-2 top-8 px-2 py-1 text-gray-500 hover:text-gray-700"
             >
-              <svg 
-                width="12" 
-                height="7" 
-                viewBox="0 0 12 7" 
-                fill="none" 
+              <svg
+                width="12"
+                height="7"
+                viewBox="0 0 12 7"
+                fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                className={`transform transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+                className={`transform transition-transform ${
+                  isDropdownOpen ? "rotate-180" : ""
+                }`}
               >
-                <path 
-                  d="M1.10378 1.09419L5.82044 6.00739L10.5371 1.09419" 
-                  stroke="#34334B" 
-                  strokeWidth="1.5" 
-                  strokeLinecap="round" 
+                <path
+                  d="M1.10378 1.09419L5.82044 6.00739L10.5371 1.09419"
+                  stroke="#34334B"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
                   strokeLinejoin="round"
                 />
               </svg>
@@ -279,20 +293,31 @@ const CallProcessor: React.FC = () => {
                     key={filename}
                     onClick={() => handleFileSelect(filename)}
                     className={`px-4 py-3 cursor-pointer hover:bg-gray-50 flex items-center justify-between border-b border-gray-100 last:border-b-0 ${
-                      filenames === filename ? 'bg-blue-50' : ''
+                      filenames === filename ? "bg-blue-50" : ""
                     }`}
                   >
-                    <span className={`truncate text-sm ${filenames === filename ? 'text-blue-700 font-medium' : 'text-gray-900'}`}>
+                    <span
+                      className={`truncate text-sm ${
+                        filenames === filename
+                          ? "text-blue-700 font-medium"
+                          : "text-gray-900"
+                      }`}
+                    >
                       {filename}
                     </span>
                     {filenames === filename && (
                       <div className="w-4 h-4 bg-blue-600 rounded-sm flex items-center justify-center flex-shrink-0 ml-2">
-                        <svg width="12" height="9" viewBox="0 0 12 9" fill="none">
-                          <path 
-                            d="M1 4.5L4 7.5L11 0.5" 
-                            stroke="white" 
-                            strokeWidth="2" 
-                            strokeLinecap="round" 
+                        <svg
+                          width="12"
+                          height="9"
+                          viewBox="0 0 12 9"
+                          fill="none"
+                        >
+                          <path
+                            d="M1 4.5L4 7.5L11 0.5"
+                            stroke="white"
+                            strokeWidth="2"
+                            strokeLinecap="round"
                             strokeLinejoin="round"
                           />
                         </svg>
@@ -310,7 +335,7 @@ const CallProcessor: React.FC = () => {
           disabled={isProcessing || !selectedModel || !filenames.trim()}
           className="w-full py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:bg-indigo-300"
         >
-          {isProcessing ? 'Processing...' : 'Process Call'}
+          {isProcessing ? "Processing..." : "Process Call"}
         </button>
       </form>
 
@@ -323,23 +348,33 @@ const CallProcessor: React.FC = () => {
       {response && (
         <div className="mt-4 space-y-4">
           {Object.entries(response.results).map(([filename, result]) => (
-            <div key={filename} className="bg-green-100 p-4 rounded-md text-green-700">
+            <div
+              key={filename}
+              className="bg-green-100 p-4 rounded-md text-green-700"
+            >
               <h2 className="text-lg font-bold mb-2">Results for {filename}</h2>
 
               {/* Call Summary */}
               <div>
                 <button
-                  onClick={() => toggleSection('summary')}
+                  onClick={() => toggleSection("summary")}
                   className="flex items-center justify-between w-full text-left font-medium text-gray-700"
                 >
                   Call Summary
                   <svg
-                    className={`w-4 h-4 transform ${expandedSections.summary ? 'rotate-180' : ''}`}
+                    className={`w-4 h-4 transform ${
+                      expandedSections.summary ? "rotate-180" : ""
+                    }`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </button>
                 {expandedSections.summary && (
@@ -350,23 +385,32 @@ const CallProcessor: React.FC = () => {
               {/* Sentiment */}
               <div>
                 <button
-                  onClick={() => toggleSection('sentiment')}
+                  onClick={() => toggleSection("sentiment")}
                   className="flex items-center justify-between w-full text-left font-medium text-gray-700"
                 >
                   Sentiment
                   <svg
-                    className={`w-4 h-4 transform ${expandedSections.sentiment ? 'rotate-180' : ''}`}
+                    className={`w-4 h-4 transform ${
+                      expandedSections.sentiment ? "rotate-180" : ""
+                    }`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </button>
                 {expandedSections.sentiment && (
                   <div className="mt-2 text-sm">
                     <p>{result.sentiment}</p>
-                    <p><strong>Score:</strong> {result.sentiment_score}/10</p>
+                    <p>
+                      <strong>Score:</strong> {result.sentiment_score}/10
+                    </p>
                   </div>
                 )}
               </div>
@@ -374,17 +418,24 @@ const CallProcessor: React.FC = () => {
               {/* Call Purpose */}
               <div>
                 <button
-                  onClick={() => toggleSection('purpose')}
+                  onClick={() => toggleSection("purpose")}
                   className="flex items-center justify-between w-full text-left font-medium text-gray-700"
                 >
                   Call Purpose
                   <svg
-                    className={`w-4 h-4 transform ${expandedSections.purpose ? 'rotate-180' : ''}`}
+                    className={`w-4 h-4 transform ${
+                      expandedSections.purpose ? "rotate-180" : ""
+                    }`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </button>
                 {expandedSections.purpose && (
@@ -395,23 +446,36 @@ const CallProcessor: React.FC = () => {
               {/* Speaker Insights */}
               <div>
                 <button
-                  onClick={() => toggleSection('speakerInsights')}
+                  onClick={() => toggleSection("speakerInsights")}
                   className="flex items-center justify-between w-full text-left font-medium text-gray-700"
                 >
                   Speaker Insights
                   <svg
-                    className={`w-4 h-4 transform ${expandedSections.speakerInsights ? 'rotate-180' : ''}`}
+                    className={`w-4 h-4 transform ${
+                      expandedSections.speakerInsights ? "rotate-180" : ""
+                    }`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </button>
                 {expandedSections.speakerInsights && (
                   <div className="mt-2 text-sm">
-                    <p><strong>Customer ({result.Customer_name}):</strong> {result.speaker_insights.Customer}</p>
-                    <p><strong>Agent ({result.Agent_name}):</strong> {result.speaker_insights.Agent}</p>
+                    <p>
+                      <strong>Customer ({result.Customer_name}):</strong>{" "}
+                      {result.speaker_insights.Customer}
+                    </p>
+                    <p>
+                      <strong>Agent ({result.Agent_name}):</strong>{" "}
+                      {result.speaker_insights.Agent}
+                    </p>
                   </div>
                 )}
               </div>
@@ -419,17 +483,24 @@ const CallProcessor: React.FC = () => {
               {/* Action Items */}
               <div>
                 <button
-                  onClick={() => toggleSection('actionItems')}
+                  onClick={() => toggleSection("actionItems")}
                   className="flex items-center justify-between w-full text-left font-medium text-gray-700"
                 >
                   Action Items
                   <svg
-                    className={`w-4 h-4 transform ${expandedSections.actionItems ? 'rotate-180' : ''}`}
+                    className={`w-4 h-4 transform ${
+                      expandedSections.actionItems ? "rotate-180" : ""
+                    }`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </button>
                 {expandedSections.actionItems && (
@@ -444,17 +515,24 @@ const CallProcessor: React.FC = () => {
               {/* Email Sent */}
               <div>
                 <button
-                  onClick={() => toggleSection('emailSent')}
+                  onClick={() => toggleSection("emailSent")}
                   className="flex items-center justify-between w-full text-left font-medium text-gray-700"
                 >
                   Email Sent
                   <svg
-                    className={`w-4 h-4 transform ${expandedSections.emailSent ? 'rotate-180' : ''}`}
+                    className={`w-4 h-4 transform ${
+                      expandedSections.emailSent ? "rotate-180" : ""
+                    }`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </button>
                 {expandedSections.emailSent && (
@@ -469,17 +547,24 @@ const CallProcessor: React.FC = () => {
               {/* Agent Rating */}
               <div>
                 <button
-                  onClick={() => toggleSection('agentRating')}
+                  onClick={() => toggleSection("agentRating")}
                   className="flex items-center justify-between w-full text-left font-medium text-gray-700"
                 >
                   Agent Rating
                   <svg
-                    className={`w-4 h-4 transform ${expandedSections.agentRating ? 'rotate-180' : ''}`}
+                    className={`w-4 h-4 transform ${
+                      expandedSections.agentRating ? "rotate-180" : ""
+                    }`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </button>
                 {expandedSections.agentRating && (
@@ -490,23 +575,34 @@ const CallProcessor: React.FC = () => {
               {/* Names */}
               <div>
                 <button
-                  onClick={() => toggleSection('names')}
+                  onClick={() => toggleSection("names")}
                   className="flex items-center justify-between w-full text-left font-medium text-gray-700"
                 >
                   Names
                   <svg
-                    className={`w-4 h-4 transform ${expandedSections.names ? 'rotate-180' : ''}`}
+                    className={`w-4 h-4 transform ${
+                      expandedSections.names ? "rotate-180" : ""
+                    }`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </button>
                 {expandedSections.names && (
                   <div className="mt-2 text-sm">
-                    <p><strong>Customer:</strong> {result.Customer_name}</p>
-                    <p><strong>Agent:</strong> {result.Agent_name}</p>
+                    <p>
+                      <strong>Customer:</strong> {result.Customer_name}
+                    </p>
+                    <p>
+                      <strong>Agent:</strong> {result.Agent_name}
+                    </p>
                   </div>
                 )}
               </div>
@@ -514,24 +610,32 @@ const CallProcessor: React.FC = () => {
               {/* Sentiment Chunks */}
               <div>
                 <button
-                  onClick={() => toggleSection('sentimentChunks')}
+                  onClick={() => toggleSection("sentimentChunks")}
                   className="flex items-center justify-between w-full text-left font-medium text-gray-700"
                 >
                   Sentiment Chunks
                   <svg
-                    className={`w-4 h-4 transform ${expandedSections.sentimentChunks ? 'rotate-180' : ''}`}
+                    className={`w-4 h-4 transform ${
+                      expandedSections.sentimentChunks ? "rotate-180" : ""
+                    }`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </button>
                 {expandedSections.sentimentChunks && (
                   <ul className="mt-2 text-sm list-disc pl-5">
                     {result.sentiment_chunks.map((chunk, index) => (
                       <li key={index}>
-                        <strong>{chunk.time_sec}s:</strong> "{chunk.text}" ({chunk.sentiment})
+                        <strong>{chunk.time_sec}s:</strong> &quot;{chunk.text}
+                        &quot; ({chunk.sentiment})
                       </li>
                     ))}
                   </ul>
@@ -541,24 +645,34 @@ const CallProcessor: React.FC = () => {
               {/* Call Outs */}
               <div>
                 <button
-                  onClick={() => toggleSection('callOuts')}
+                  onClick={() => toggleSection("callOuts")}
                   className="flex items-center justify-between w-full text-left font-medium text-gray-700"
                 >
                   Call Outs
                   <svg
-                    className={`w-4 h-4 transform ${expandedSections.callOuts ? 'rotate-180' : ''}`}
+                    className={`w-4 h-4 transform ${
+                      expandedSections.callOuts ? "rotate-180" : ""
+                    }`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </button>
                 {expandedSections.callOuts && (
                   <ul className="mt-2 text-sm list-disc pl-5">
                     {result.call_outs.map((callOut, index) => (
                       <li key={index}>
-                        <strong>{callOut.time_sec}s - {callOut.label}:</strong> {callOut.description}
+                        <strong>
+                          {callOut.time_sec}s - {callOut.label}:
+                        </strong>{" "}
+                        {callOut.description}
                       </li>
                     ))}
                   </ul>
@@ -568,23 +682,35 @@ const CallProcessor: React.FC = () => {
               {/* Anomaly Detection */}
               <div>
                 <button
-                  onClick={() => toggleSection('anomalyDetection')}
+                  onClick={() => toggleSection("anomalyDetection")}
                   className="flex items-center justify-between w-full text-left font-medium text-gray-700"
                 >
                   Anomaly Detection
                   <svg
-                    className={`w-4 h-4 transform ${expandedSections.anomalyDetection ? 'rotate-180' : ''}`}
+                    className={`w-4 h-4 transform ${
+                      expandedSections.anomalyDetection ? "rotate-180" : ""
+                    }`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </button>
                 {expandedSections.anomalyDetection && (
                   <div className="mt-2 text-sm">
-                    <p><strong>Anomaly Detected:</strong> {result.anomaly_detection.isAnomaly ? 'Yes' : 'No'}</p>
-                    <p><strong>Reason:</strong> {result.anomaly_detection.reason}</p>
+                    <p>
+                      <strong>Anomaly Detected:</strong>{" "}
+                      {result.anomaly_detection.isAnomaly ? "Yes" : "No"}
+                    </p>
+                    <p>
+                      <strong>Reason:</strong> {result.anomaly_detection.reason}
+                    </p>
                   </div>
                 )}
               </div>
