@@ -11,6 +11,7 @@ import {
   ProgressBar,
   SentimentChartNew,
   Dashbordmain,
+  AnomalyDetection,
 } from "./dashboard/index"
 import { useDashboard } from "../context/DashboardContext"
 import SentimentScoreCard from "./dashboard/cards/SentimentScoreCard"
@@ -290,6 +291,12 @@ const Dashboard = () => {
                     audioId={graphData?.id}
                     sentimentScore={graphData?.sentiment_score ?? 0}
                   />
+                {/* anomaly-detection component */}
+                <AnomalyDetection
+                  isAnomaly={graphData?.anomaly_detection?.isAnomaly ?? false}
+                  anomalyCount={graphData?.anomaly_detection?.anomalyCount ?? 0}
+                  reasons={graphData?.anomaly_detection?.reasons ?? []}
+                />
                 </div>
               ))}
             </DndContext>
