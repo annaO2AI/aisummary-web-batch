@@ -7,8 +7,8 @@ import AgentTable from './AgentTable';
 import Image from 'next/image';
 import {LoganimationsIcon} from "../chat-ui-backup/components/icons"
 
-interface Agent {                                   
-  agent_id: number;
+export interface Agent {
+  agent_id: string | number;
   agent_name: string;
   total_calls: number;
   avg_agent_rating: number;
