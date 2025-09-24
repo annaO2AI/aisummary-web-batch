@@ -249,8 +249,8 @@ export default function SentimentScoreGauge({
   ]
 
   return (
-    <div className="bg-white rounded-xl shadow p-4 w-full w-[40%]">
-      <h3 className="text-xl font-medium  mb-7 ot-title">
+    <div className="bg-white rounded-xl shadow py-8 px-12 w-full w-[40%]">
+      <h3 className="text-xl font-medium  mb-7 ot-title text-left">
         Overall Sentiment Score
       </h3>
       <ResponsiveContainer width="100%" height={100}>

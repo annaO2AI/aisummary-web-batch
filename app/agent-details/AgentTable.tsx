@@ -72,7 +72,7 @@ const AgentTable: React.FC<AgentTableProps> = ({ agents, onBack }) => {
                   ))}
                 </ul>
               ) : (
-                <div className='text-center'>
+                <div className='text-center flex items-center justify-center h-[100%]'>
                   <Image
                     src="/anomaliesfileEnpty.png"
                     alt="I Call Summary Illustration"
