@@ -372,5 +372,27 @@ body {
     overflow: hidden;
     overflow-y: auto;
   }
-
+  .agent-avatar-fistleter{
+    height: 110px;
+    width: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 55px;
+    font-weight: bold;
+  }
+  .AnomalyChart-calls-color{
+    display: block;
+    width: 15px;
+    height: 15px;
+    background-color: #EAEDF1;
+    border-radius: 10px;
+  }
+  .AnomalyChart-Anomalies-color{
+      display: block;
+      width: 15px;
+      height: 15px;
+      background-color: #F8623F;
+      border-radius: 10px;
+  }
 }
