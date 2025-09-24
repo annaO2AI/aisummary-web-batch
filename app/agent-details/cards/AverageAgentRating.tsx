@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 export default function AverageAgentRating({ score }: SentimentScoreCardProps) {
   return (
-    <div className="relative bg-[#B275F2] text-white w-64  rounded-xl shadow-md overflow-hidden flex flex-col items-start px-12 py-6 w-[18%]">
+    <div className="relative bg-[#B275F2] text-white w-64  rounded-xl shadow-md overflow-hidden flex flex-col items-start px-12 py-6 w-[20%]">
       <div className="flex space-x-1 mb-6">
         <Image
           src="/stars.png"

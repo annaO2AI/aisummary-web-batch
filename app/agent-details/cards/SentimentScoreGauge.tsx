@@ -249,7 +249,7 @@ export default function SentimentScoreGauge({
   ]
 
   return (
-    <div className="bg-white rounded-xl shadow p-4 w-full w-[56%]">
+    <div className="bg-white rounded-xl shadow p-4 w-full w-[40%]">
       <h3 className="text-xl font-medium  mb-7 ot-title">
         Overall Sentiment Score
       </h3>

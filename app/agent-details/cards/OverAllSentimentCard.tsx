@@ -32,7 +32,7 @@ export default function OSCard({ sentiment }: OSCardProps) {
 
   return (
     <div
-      className={`text-white p-6 rounded-xl w-64 shadow-md relative overflow-hidden w-[18%] ${getSentimentBg(
+      className={`text-white p-6 rounded-xl w-64 shadow-md relative overflow-hidden w-[20%] ${getSentimentBg(
         mappedSentiment
       )}`}
     >
