@@ -4,6 +4,7 @@ import SentimentScoreGauge from './cards/SentimentScoreGauge';
 import TotalNumberofCalls from './cards/TotalNumberofCalls';
 import AnomalyChart from './cards/AnomalyChart';
 import AgentAvatar from './cards/AgentAvatar';
+import Image from 'next/image';
 
 interface AgentTableProps {
   agents: Agent[];
@@ -36,29 +37,50 @@ const AgentTable: React.FC<AgentTableProps> = ({ agents, onBack }) => {
             <AverageAgentRating score={agent.avg_agent_rating ?? 0} />
             <SentimentScoreGauge sentimentScore={agent.avg_sentiment_rating ?? 0} />
           </div>
-          <div className="flex text-left gap-3 px-16 py-4 bg-white items-center mb-12">
-            <div className="flex flex-col gap-3">
+          <div className="flex text-left gap-3 px-16 py-4 bg-white items-center mb-12 ">
+            <div className="flex flex-col gap-3 w-[18%] ">
               <h3 className="text-[26px] font-bold">Total Anomalies</h3>
               <div>
-                Automated anomaly detection. Actionable<br />
-                insights at a glance.Strengthen <br />
+                Automated anomaly detection. Actionable
+                insights at a glance.Strengthen
                 quality and compliance.
               </div>
             </div>
-            <div>
-              <AnomalyChart agent={agent} />
+            <div className='w-[45%] flex gap-3 items-center'>
+              <div className='w-[330px]'>
+                <AnomalyChart agent={agent} />
+              </div>
+              <div className="flex flex-col gap-2 w-[230px]">
+                <div className="px-6 py-4 flex gap-2 items-center bg-gray-100 rounded-xl">
+                  <span className="AnomalyChart-calls-color"></span>
+                  <span>Total Calls</span>
+                  <span className="text-[30px] font-bold">{agent.total_calls}</span>
+                </div>
+                <div className="px-6 py-4 flex gap-2 items-center bg-gray-100 active-color rounded-xl">
+                  <span className="AnomalyChart-Anomalies-color"></span>
+                  <span>Total Anomalies</span>
+                  <span className="text-[30px] font-bold">{agent.total_anomalies}</span>
+                </div>
+              </div>
             </div>
-            <div className="flex flex-col gap-2">
-              <div className="px-6 py-4 flex gap-2 items-center bg-gray-100 rounded-xl">
-                <span className="AnomalyChart-calls-color"></span>
-                <span>Total Calls</span>
-                <span className="text-[30px] font-bold">{agent.total_calls}</span>
-              </div>
-              <div className="px-6 py-4 flex gap-2 items-center bg-gray-100 active-color rounded-xl">
-                <span className="AnomalyChart-Anomalies-color"></span>
-                <span>Total Anomalies</span>
-                <span className="text-[30px] font-bold">{agent.total_anomalies}</span>
-              </div>
+            <div className="flex flex-col gap-2 p-12 h-[350px] w-[32%] border-l-2 border-gray-100">
+              <h2 className="text-[20px] font-bold">Anomalies detection file name</h2>
+              {agent.detected_audiofiles && agent.detected_audiofiles.length > 0 ? (
+                <ul className="list-none w-full m-0 p-0 flex flex-col gap-2">
+                  {agent.detected_audiofiles.map((file, index) => (
+                    <li className="w-full p-3 text-[16px] bg-white rounded-md detected_audiofiles-list" key={index}>{file}</li>
+                  ))}
+                </ul>
+              ) : (
+                <div className='text-center'>
+                  <Image
+                    src="/anomaliesfileEnpty.png"
+                    alt="I Call Summary Illustration"
+                    width={107}
+                    height={128}
+                  />
+                </div>
+              )}
             </div>
           </div>
           <hr />

@@ -395,4 +395,7 @@ body {
       background-color: #F8623F;
       border-radius: 10px;
   }
+  .detected_audiofiles-list{
+    background-color: #E6EDF9;
+  }
 }
