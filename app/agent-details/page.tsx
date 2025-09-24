@@ -8,6 +8,7 @@ interface Agent {
   avg_agent_rating: number;
   avg_sentiment_rating: number;
   total_anomalies: number;
+  detected_audiofiles : [];
 }
 
 export const metadata = {
