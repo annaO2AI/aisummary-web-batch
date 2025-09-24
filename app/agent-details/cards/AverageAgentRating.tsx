@@ -14,7 +14,13 @@ export default function AverageAgentRating({ score }: SentimentScoreCardProps) {
           height={38}
         />
       </div>
-      <div className="text-[40px] texi-left text-white font-semibold">{score}/10</div>
+      <div className="text-[40px] texi-left text-white font-semibold">
+
+         {Number.isInteger(score)
+                        ? score
+                        : score.toFixed(2)}
+                        /10
+      </div>
       <div className="text-left opacity-90">Average <br/> Agent Rating</div>
       <div className='absolute bottom-0 right-0'>
        <svg width="121" height="121" viewBox="0 0 121 121" fill="none" xmlns="http://www.w3.org/2000/svg">

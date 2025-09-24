@@ -39,8 +39,8 @@ async function fetchAgentStatistics(): Promise<Agent[]> {
 export default async function AgentDetails() {
   const initialAgents = await fetchAgentStatistics();
   return (
-    <div className="hidden-1 ot-dashbord-main-container mt-12">
-      <div className="ot-min-h-screen flex items-center justify-center">
+    <div className="hidden-1 ot-dashbord-main-container pt-8">
+      <div className="ot-min-h-screen flex items-top justify-center mt-12">
             <AgentDetailsPage initialAgents={initialAgents} />
       </div>
     </div>
