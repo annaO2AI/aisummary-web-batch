@@ -3,9 +3,10 @@ import { Agent } from "./../types" // Adjust the import path if needed
 
 interface AgentTableProps {
   agents: Agent[]
+  onViewDetails?: (agent: Agent) => void
 }
 
-export default function AgentTable({ agents }: AgentTableProps) {
+export default function AgentTable({ agents, onViewDetails }: AgentTableProps) {
   return (
     <div className="overflow-x-auto w-[100%] mt-2 max-w-7xl">
       <table className="bg-white border border-gray-200 min-w-full">
@@ -17,7 +18,8 @@ export default function AgentTable({ agents }: AgentTableProps) {
             <th className="py-2 px-4 border-b text-left">Average Rating of Agent</th>
             <th className="py-2 px-4 border-b text-left">Average Duration (s)</th>
             <th className="py-2 px-4 border-b text-left">Anomalies Detected</th>
-            <th className="py-2 px-4 border-b text-left">Detected Files</th>
+            {/* <th className="py-2 px-4 border-b text-left">Detected Files</th> */}
+            <th className="py-2 px-4 border-b text-left">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -41,10 +43,20 @@ export default function AgentTable({ agents }: AgentTableProps) {
                   : agent.avg_duration_seconds.toFixed(2)}
               </td>
               <td className="py-2 px-4 border-b">{agent.total_anomalies}</td>
-              <td className="py-2 px-4 border-b">
+              {/* <td className="py-2 px-4 border-b">
                 {agent.detected_audiofiles && agent.detected_audiofiles.length
                   ? agent.detected_audiofiles.join(", ")
                   : "-"}
+              </td> */}
+              <td className="py-2 px-4 border-b">
+                {onViewDetails && (
+                  <button
+                    onClick={() => onViewDetails(agent)}
+                    className="px-3 py-1 text-blue-600 hover:text-blue-800"
+                  >
+                    View details
+                  </button>
+                )}
               </td>
             </tr>
           ))}

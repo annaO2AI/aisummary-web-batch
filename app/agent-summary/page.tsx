@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import AgentFilterForm from "./card/AgentFilterForm"
 import AgentTable from "./card/AgentTable" // Import the new table component
+import AgentDetailsView from "./card/AgentDetailsView" // Import the details view component
 import { Agent } from "./types" // Adjust the import path if needed
 
 function formatForApi(datetimeLocalValue: string): string {
@@ -17,6 +18,7 @@ export default function AgentSummaryPage() {
   const [agents, setAgents] = useState<Agent[]>([])
   const [loading, setLoading] = useState<boolean>(false)
   const [showFilters, setShowFilters] = useState<boolean>(true)
+  const [selectedAgentForDetails, setSelectedAgentForDetails] = useState<Agent | null>(null)
 
   const canFetch = useMemo(() => Boolean(start && end), [start, end])
 
@@ -45,6 +47,14 @@ export default function AgentSummaryPage() {
     }
   }, [start, end, canFetch])
 
+  const handleViewDetails = (agent: Agent) => {
+    setSelectedAgentForDetails(agent)
+  }
+
+  const handleBack = () => {
+    setSelectedAgentForDetails(null)
+  }
+
   useEffect(() => {
     if (canFetch) {
       fetchAgents()
@@ -54,7 +64,7 @@ export default function AgentSummaryPage() {
   return (
     <div className="hidden-1 ot-dashbord-main-container pt-8">
       <div className="ot-min-h-screen flex items-top justify-center mt-12">
-         {!showFilters && (
+         {/* {!showFilters && (
           <div className="mb-2 flex justify-end">
             <button
               onClick={() => setShowFilters(true)}
@@ -63,7 +73,7 @@ export default function AgentSummaryPage() {
               Change Filters
             </button>
           </div>
-        )}
+        )} */}
         {showFilters && (
           <AgentFilterForm
             start={start}
@@ -76,9 +86,14 @@ export default function AgentSummaryPage() {
           />
         )}
        
-        {!showFilters && agents.length > 0 && <AgentTable agents={agents} />}
-        {!showFilters && agents.length === 0 && !loading && (
+        {!showFilters && agents.length > 0 && !selectedAgentForDetails && (
+          <AgentTable agents={agents} onViewDetails={handleViewDetails} />
+        )}
+        {!showFilters && agents.length === 0 && !loading && !selectedAgentForDetails && (
           <div className="py-8 text-center text-gray-500">No data for selected range.</div>
+        )}
+        {selectedAgentForDetails && (
+          <AgentDetailsView agent={selectedAgentForDetails} onBack={handleBack} />
         )}
       </div>
     </div>
