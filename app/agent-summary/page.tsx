@@ -30,7 +30,7 @@ export default async function AgentSummaryPage() {
     <div className="ot-min-h-screen w-full">
       <div className="max-w-6xl w-full grid grid-cols-[32%_68%] gap-6 items-start">
         <div className="flex flex-col gap-4">       
-          <AgentSidebar agents={agents as any} selectedAgentIds={[]} />        
+          {/* <AgentSidebar agents={agents as any} selectedAgentIds={[]} />         */}
         </div>
 
         <div className="container mx-auto p-4">
