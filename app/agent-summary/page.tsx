@@ -1,6 +1,4 @@
-import AgentDetailsPage from "../agent-details/AgentDetailsPage"
 import AgentSidebar from "../agent-details/Sidebar"
-import Image from "next/image"
 
 interface Agent {
   agent_id: number
