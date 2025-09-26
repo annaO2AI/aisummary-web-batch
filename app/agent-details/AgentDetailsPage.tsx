@@ -244,7 +244,7 @@ const AgentDetailsPage: React.FC<AgentDetailsPageProps> = ({ initialAgents = [] 
                     <th className="py-2 px-4 border-b text-left">Agent Name</th>
                     {/* <th className="py-2 px-4 border-b text-left">Agent ID</th> */}
                     <th className="py-2 px-4 border-b text-left">Total Number of Calls</th>
-                    <th className="py-2 px-4 border-b text-left">Average Call Duration</th>
+                    {/* <th className="py-2 px-4 border-b text-left">Average Call Duration</th> */}
                     <th className="py-2 px-4 border-b text-left">Average Call Sentiment</th>
                     <th className="py-2 px-4 border-b text-left">Average  Rating of Agent</th>
                     <th className="py-2 px-4 border-b text-left">Anomalies Detected</th>
@@ -256,7 +256,6 @@ const AgentDetailsPage: React.FC<AgentDetailsPageProps> = ({ initialAgents = [] 
                       <td className="py-2 px-4 border-b">{agent.agent_name}</td>
                       {/* <td className="py-2 px-4 border-b">{agent.agent_id}</td> */}
                       <td className="py-2 px-4 border-b">{agent.total_calls}</td>
-                      <td className="py-2 px-4 border-b text-left"> </td>
                       <td className="py-2 px-4 border-b">
 
                         {Number.isInteger(agent.avg_sentiment_rating)
