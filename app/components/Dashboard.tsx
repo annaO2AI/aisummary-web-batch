@@ -239,7 +239,7 @@ const Dashboard = () => {
               buttonText="Close"
               onButtonClick={() => setIsToast(false)}
             />
-            <h1 className="text-2xl font-bold mt-6 pt-6 ot-title">
+            <h1 className="text-2xl font-bold mt-1 pt-6 ot-title">
               Audio Insights
             </h1>
            <DndContext

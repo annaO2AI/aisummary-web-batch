@@ -18,7 +18,7 @@ export default function AnomalyDetection({
       setToast(true)
       setTimeout(() => {
         setToast(false)
-      },20000)
+      },60000)
     }else{
       setToast(false)
     }
