@@ -4,7 +4,7 @@ import { fetchWithAuth } from "@/app/utils/axios"
 
 type Props = {
   selectedAudio: string[] | null  // Changed to array
-  setGraphData: (data: any[]) => void
+  setGraphData: (data: any) => void
   loading: boolean
   setLoading: (v: boolean) => void
   setProgress:(V:number) => void
@@ -18,26 +18,33 @@ export default function ProcessButton({
   setProgress
 }: Props) {
   const handleProcess = async () => {
-    if (!selectedAudio || selectedAudio.length === 0) return
-    
+    if (!selectedAudio || selectedAudio.length === 0) return    
     setLoading(true)
-
     try {
-      const res = await fetchWithAuth(API_ROUTES.processCall, {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Accept": "application/json" 
-        },
-        body: JSON.stringify({
-          filenames: selectedAudio,  // Send array of filenames
+      const res = await axios.post(
+        API_ROUTES.processCall,
+        {
+          filenames: selectedAudio,
           model_option: "AzureOpenAI",
-        }),
-      })
-
-      const data = await res.json()
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          onUploadProgress: (progressEvent) => {
+            if (progressEvent.total) {
+              const percent = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              )
+              setProgress(percent)
+            }
+          },
+        }
+      )
+      
       // console.log("Processing result:", data)
-      setGraphData(data)
+      setGraphData(res?.data)
     } catch (err) {
       console.error("Processing error:", err)
     } finally {

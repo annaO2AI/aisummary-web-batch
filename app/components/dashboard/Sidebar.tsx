@@ -9,6 +9,7 @@ import clsx from "clsx"
 import { AudioSelector, ProcessButton } from "./index"
 import { useDashboard } from "../../context/DashboardContext"
 import Link from "next/link"
+import { useState } from "react"
 
 const navItems = [
   { label: "Home", icon: HomeIcon, href: "#" },
@@ -37,7 +38,7 @@ export default function Sidebar({
     loading,
     setLoading,
   } = useDashboard()
-
+const [isProgress, setIsProgress] = useState(0)
   const isExpanded = !collapsed
 
   const handleMenuClick = () => {
@@ -120,6 +121,7 @@ export default function Sidebar({
             setGraphData={setGraphData}
             loading={loading}
             setLoading={setLoading}
+            setProgress={setIsProgress}
           />
 
           {/* Menu Items */}
