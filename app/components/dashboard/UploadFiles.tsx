@@ -1,3 +1,4 @@
+//UploadFiles.tsx
 "use client";
 import React, { useState, ChangeEvent, DragEvent } from "react";
 import { Upload, File, AlertCircle, Loader2, CheckCircle } from "lucide-react";
@@ -35,12 +36,12 @@ const AudioUploadComponent: React.FC = () => {
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
-      if (selectedFile.type.startsWith("audio/")) {
+      if (selectedFile.type === "application/pdf") {
         setFile(selectedFile);
         setError(null);
         setResponse(null);
       } else {
-        setError("Please select a valid audio file.");
+        setError("Please select a valid PDF file.");
         setFile(null);
       }
     }
@@ -49,12 +50,12 @@ const AudioUploadComponent: React.FC = () => {
   const handleDrop = (event: DragEvent<HTMLDivElement>): void => {
     event.preventDefault();
     const droppedFile = event.dataTransfer.files[0];
-    if (droppedFile && droppedFile.type.startsWith("audio/")) {
+    if (droppedFile && droppedFile.type === "application/pdf") {
       setFile(droppedFile);
       setError(null);
       setResponse(null);
     } else {
-      setError("Please drop a valid audio file.");
+      setError("Please drop a valid PDF file.");
     }
   };
 
@@ -216,13 +217,13 @@ const AudioUploadComponent: React.FC = () => {
               <span>Browse Files</span>
               <input
                 type="file"
-                accept="audio/*"
+                accept="application/pdf"
                 onChange={handleFileChange}
                 className="hidden"
               />
             </label>
             <p className="text-xs text-gray-500 mt-2 osubtitle">
-              Supported formats: PDF, DOC
+              Supported formats: PDF
             </p>
           </div>
           <div className="pt-6 rounded-lg">
