@@ -219,13 +219,7 @@ const Dashboard = () => {
 
   return (
   <>
-  <Toast
-        open={isToast}
-        title="Success!"
-        description="Anomaly Detection"
-        buttonText="Close"
-        onButtonClick={() => setIsToast(false)}
-      />
+  
     <div className="relative z-0 max-w-7xl mx-auto space-y-6 px-4">
       {/* Audio Insights */}
       <div
@@ -238,6 +232,13 @@ const Dashboard = () => {
       >
         {showAudioInsights && (
           <div className="mt-6 pt-4 audio-insights-main flex flex-col gap-6 ">
+            <Toast
+              open={isToast}
+              title="Success!"
+              description="Anomaly Detection"
+              buttonText="Close"
+              onButtonClick={() => setIsToast(false)}
+            />
             <h1 className="text-2xl font-bold mt-6 pt-6 ot-title">
               Audio Insights
             </h1>

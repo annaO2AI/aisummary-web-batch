@@ -188,8 +188,8 @@ const AudioUploadComponent: React.FC = () => {
   return (
     <div className="max-w-2xl mx-auto p-6">
       <div className="text-left mb-6">
-        <h2 className="text-2xl font-bold ot-title">Upload Audio File</h2>
-        <p className="font-sm osubtitle">Upload your audio file for processing</p>
+        <h2 className="text-2xl font-bold ot-title">Upload Manually File</h2>
+        <p className="font-sm osubtitle">Upload your file for processing</p>
       </div>
 
       {/* File Upload Area */}
@@ -217,7 +217,7 @@ const AudioUploadComponent: React.FC = () => {
               />
             </label>
             <p className="text-xs text-gray-500 mt-2 osubtitle">
-              Supported formats: MP3, WAV, M4A, OGG, FLAC
+              Supported formats: PDF, DOC
             </p>
           </div>
           <div className="pt-6 rounded-lg">
