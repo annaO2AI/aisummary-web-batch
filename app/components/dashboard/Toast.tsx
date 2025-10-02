@@ -4,7 +4,7 @@ const Toast = ({ open, title, description, buttonText, onButtonClick }:any) => {
   if (!open) return null;
 
   return (
-    <div className="flex justify-between w-[100%] items-center rounded-md mt-12 mb-6 bg-red-600 h-[60]">
+    <div className="flex justify-between w-[100%] items-center rounded-md mt-12 mb-6 bg-red-600 h-[60] p-6">
       {/* <div style={{ fontWeight: "bold", fontSize: "18px" }}>{title}</div> */}
       <div className="text-white text-base">{description}</div>
       <div>
