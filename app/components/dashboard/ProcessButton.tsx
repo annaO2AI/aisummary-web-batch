@@ -1,3 +1,4 @@
+import axios from "axios"
 import { API_ROUTES } from "../../constants/api"
 import { fetchWithAuth } from "@/app/utils/axios"
 
@@ -6,6 +7,7 @@ type Props = {
   setGraphData: (data: any[]) => void
   loading: boolean
   setLoading: (v: boolean) => void
+  setProgress:(V:number) => void
 }
 
 export default function ProcessButton({
@@ -13,6 +15,7 @@ export default function ProcessButton({
   setGraphData,
   loading,
   setLoading,
+  setProgress
 }: Props) {
   const handleProcess = async () => {
     if (!selectedAudio || selectedAudio.length === 0) return

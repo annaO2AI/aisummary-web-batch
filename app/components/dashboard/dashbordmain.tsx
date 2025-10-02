@@ -19,7 +19,9 @@ const navItems = [
   { label: "Settings", icon: SettingsIcon, href: "#" },
 ]
 
-export default function Dashbordmain() {
+export default function Dashbordmain({setProgress}:{
+  setProgress:(v:number) => void
+}) {
   const [username, setUsername] = useState<string | null>(null)
   const [selectedAudio, setSelectedAudio] = useState<string[] | null>(null);
   const {
@@ -93,13 +95,12 @@ export default function Dashbordmain() {
                 />
                    </div>
                 </div>
-
-
                 <ProcessButton
                   selectedAudio={selectedAudio}
                   setGraphData={setGraphData}
                   loading={loading}
                   setLoading={setLoading}
+                  setProgress={setProgress}
                 />
               </div>
             </div>

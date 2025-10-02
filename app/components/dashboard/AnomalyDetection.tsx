@@ -1,16 +1,28 @@
-import React from "react"
+import React, { useEffect } from "react"
 
 type AnomalyDetectionProps = {
   isAnomaly: boolean
   anomalyCount: number
   reasons: string[]
+  setToast:(loading: boolean) => void;
 }
 
 export default function AnomalyDetection({
   isAnomaly,
   anomalyCount,
   reasons,
+  setToast
 }: AnomalyDetectionProps) {
+  useEffect(() => {
+    if(isAnomaly){
+      setToast(true)
+      setTimeout(() => {
+        setToast(false)
+      },4000)
+    }else{
+      setToast(false)
+    }
+  },[])
   return (
     <div className="flex flex-col gap-4 p-6 rounded-xl shadow-sm bg-white">
       <div className="flex items-center justify-between">

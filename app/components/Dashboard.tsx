@@ -36,6 +36,7 @@ import {
 import { CSS } from "@dnd-kit/utilities"
 
 import type React from "react"
+import Toast from "./dashboard/Toast"
 
 interface Section {
   id: string
@@ -94,6 +95,7 @@ const Dashboard = () => {
     setHasProcessed,
     resetDashboard,
   } = useDashboard()
+  const [isToast,setIsToast] = useState(false)
   const formattedResults = Object.entries(graphData?.results ?? {}).map(
     ([key, value]) => ({
       id: key,
@@ -166,19 +168,19 @@ const Dashboard = () => {
     fetchUseaccess()
   }, [useremail])
 
-  // Progress bar
-  useEffect(() => {
-    let timer: NodeJS.Timeout | undefined
-    if (loading) {
-      setProgress(10)
-      timer = setInterval(() => {
-        setProgress((prev) => Math.min(prev + 80 / 60, 90))
-      }, 100)
-    } else {
-      setProgress(0)
-    }
-    return () => clearInterval(timer!)
-  }, [loading])
+  // // Progress bar
+  // useEffect(() => {
+  //   let timer: NodeJS.Timeout | undefined
+  //   if (loading) {
+  //     setProgress(10)
+  //     timer = setInterval(() => {
+  //       setProgress((prev) => Math.min(prev + 80 / 60, 90))
+  //     }, 100)
+  //   } else {
+  //     setProgress(0)
+  //   }
+  //   return () => clearInterval(timer!)
+  // }, [loading])
 
   // Handle drag end
   const onDragEnd = (event: any) => {
@@ -214,6 +216,14 @@ const Dashboard = () => {
   )
 
   return (
+  <>
+  <Toast
+        open={isToast}
+        title="Success!"
+        description="Anomaly Detection"
+        buttonText="Close"
+        onButtonClick={() => setIsToast(false)}
+      />
     <div className="relative z-0 max-w-7xl mx-auto space-y-6 px-4">
       {/* Audio Insights */}
       <div
@@ -296,6 +306,7 @@ const Dashboard = () => {
                   isAnomaly={graphData?.anomaly_detection?.isAnomaly ?? false}
                   anomalyCount={graphData?.anomaly_detection?.anomalyCount ?? 0}
                   reasons={graphData?.anomaly_detection?.reasons ?? []}
+                  setToast={setIsToast}
                 />
                 </div>
               ))}
@@ -323,7 +334,9 @@ const Dashboard = () => {
             : "opacity-0 hidden"
         )}
       >
-        {showDashboardMain && <Dashbordmain />}
+        
+        {showDashboardMain && <Dashbordmain setProgress={setProgress}/>}
+        
       </div>
 
       {/* Loading message */}
@@ -350,6 +363,7 @@ const Dashboard = () => {
           </div>
         )}
     </div>
+  </>
   )
 }
 
