@@ -33,6 +33,7 @@ export default function ProcessButton({
             Accept: "application/json",
           },
           onUploadProgress: (progressEvent) => {
+            console.log(progressEvent)
             if (progressEvent.total) {
               const percent = Math.round(
                 (progressEvent.loaded * 100) / progressEvent.total
