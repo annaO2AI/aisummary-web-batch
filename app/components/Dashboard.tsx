@@ -169,18 +169,18 @@ const Dashboard = () => {
   }, [useremail])
 
   // // Progress bar
-  // useEffect(() => {
-  //   let timer: NodeJS.Timeout | undefined
-  //   if (loading) {
-  //     setProgress(10)
-  //     timer = setInterval(() => {
-  //       setProgress((prev) => Math.min(prev + 80 / 60, 90))
-  //     }, 100)
-  //   } else {
-  //     setProgress(0)
-  //   }
-  //   return () => clearInterval(timer!)
-  // }, [loading])
+  useEffect(() => {
+    let timer: NodeJS.Timeout | undefined
+    if (loading) {
+      setProgress(10)
+      timer = setInterval(() => {
+        setProgress((prev) => Math.min(prev + 80 / 60, 99))
+      }, 800)
+    } else {
+      setProgress(0)
+    }
+    return () => clearInterval(timer!)
+  }, [loading])
 
   // Handle drag end
   const onDragEnd = (event: any) => {

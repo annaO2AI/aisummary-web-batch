@@ -139,12 +139,17 @@ const AudioUploadComponent: React.FC = () => {
     formData.append("file", file);
 
     try {
+      const formData = new FormData();
+      formData.append("incident_number", incidentNumber);
+      formData.append("file", file);
+
       const res = await fetch(
-        "https://ai-call-summary-ap-batch-fjfxdsdhdkd5b7bt.centralus-01.azurewebsites.net/upload-audio/",
+        "https://ai-call-summary-ap-batch-fjfxdsdhdkd5b7bt.centralus-01.azurewebsites.net/upload-report-to-incident",
         {
           method: "POST",
           headers: {
-            accept: "application/json",
+        accept: "application/json",
+        // Do NOT set Content-Type header; browser will set it with boundary for multipart/form-data
           },
           body: formData,
         }
@@ -355,10 +360,11 @@ const AudioUploadComponent: React.FC = () => {
               height={197}
               className="max-w-md m-auto"
             />
-            <h3 className="font-medium text-center font-bold ot-title text-2xl">
+            <h3 className="text-center font-bold ot-title text-2xl">
               Upload Successful!
             </h3>
           </div>
+         {/* 
           <div className="space-y-2 text-sm">
             <div className="text-center osubtitle">
               <span className="font-medium osubtitle">Filename:</span>
@@ -379,7 +385,7 @@ const AudioUploadComponent: React.FC = () => {
               <span className="font-medium osubtitle">Message:</span>
               <span className="osubtitle ml-2">{response.message}</span>
             </div>
-          </div>
+          </div> */}
           <button
             onClick={resetUpload}
             className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors m-auto"

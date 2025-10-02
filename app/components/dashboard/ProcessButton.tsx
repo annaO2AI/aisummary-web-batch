@@ -17,35 +17,25 @@ export default function ProcessButton({
   setLoading,
   setProgress
 }: Props) {
+
   const handleProcess = async () => {
     if (!selectedAudio || selectedAudio.length === 0) return    
     setLoading(true)
     try {
-      const res = await axios.post(
-        API_ROUTES.processCall,
-        {
-          filenames: selectedAudio,
-          model_option: "AzureOpenAI",
+      const res = await fetchWithAuth(API_ROUTES.processCall, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json" 
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          onUploadProgress: (progressEvent) => {
-            console.log(progressEvent)
-            if (progressEvent.total) {
-              const percent = Math.round(
-                (progressEvent.loaded * 100) / progressEvent.total
-              )
-              setProgress(percent)
-            }
-          },
-        }
-      )
-      
-      // console.log("Processing result:", data)
-      setGraphData(res?.data)
+        body: JSON.stringify({
+          filenames: selectedAudio,  // Send array of filenames
+          model_option: "AzureOpenAI",
+        }),
+      })
+      const data = await res.json()
+      setProgress(100)
+        setGraphData(data)
     } catch (err) {
       console.error("Processing error:", err)
     } finally {
