@@ -86,7 +86,7 @@ const AnomalyChart = ({ agent }: { agent: { total_calls: number; total_anomalies
         <div
           className="absolute bg-black rounded-md shadow-lg p-3 z-10"
           style={{
-            top: arcEndY - -150, // Position above the arc's end point
+            top: arcEndY - -20, // Position above the arc's end point
             left: arcEndX - 300, // Center horizontally relative to arc's end point
             // maxHeight: '400px',
             // overflowY: 'auto',
