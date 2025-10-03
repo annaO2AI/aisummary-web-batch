@@ -47,6 +47,7 @@ const AgentDetailsView: React.FC<AgentDetailsViewProps> = ({ agent, onBack }) =>
           </div>
           <div className='w-[45%] flex gap-3 items-center'>
             <div className='w-[330px]'>
+              
               <AnomalyChart agent={agent} />
             </div>
             <div className="flex flex-col gap-2 w-[230px]">
