@@ -46,7 +46,7 @@ const AnomalyChart = ({ agent }: { agent: { total_calls: number; total_anomalies
         width="380"
         height="380"
         onMouseEnter={handleMouseEnter}
-        onMouseMove={handleMouseMove}
+        // onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       >
         <defs>
@@ -85,6 +85,9 @@ const AnomalyChart = ({ agent }: { agent: { total_calls: number; total_anomalies
       {showTooltip && agent.detected_audiofiles && agent.detected_audiofiles.length > 0 && (
         <div
           className="absolute bg-black rounded-md shadow-lg p-3 z-10"
+           onMouseEnter={handleMouseEnter}
+        // onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
           style={{
             top: arcEndY - -20, // Position above the arc's end point
             left: arcEndX - 300, // Center horizontally relative to arc's end point
