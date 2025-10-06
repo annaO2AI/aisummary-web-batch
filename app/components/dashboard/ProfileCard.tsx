@@ -90,10 +90,12 @@ const ProfileCard: React.FC = () => {
         const res = await fetchWithAuth(url);
         if (!res.ok) {
           throw new Error(`HTTP error! Status: ${res.status}`);
-        }
-        const data = await res.json();
+        }else{
+ const data = await res.json();
         console.log("User role response:", data);
         setUseAccess(data);
+        }
+       
       } catch (err) {
         if (err instanceof Error) {
           console.error("Failed to fetch user role:", err.message);

@@ -155,9 +155,11 @@ const Dashboard = () => {
       const url = `${API_ROUTES.useaccess}?email=${useremail}`
       try {
         const res = await fetchWithAuth(url)
-        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`)
-        const data = await res.json()
-        setUseAccess(data)
+        if (!res.ok) {throw new Error(`HTTP error! Status: ${res.status}`)}else{
+
+          const data = await res.json()
+          setUseAccess(data)
+        }
       } catch (err) {
         console.error("Failed to fetch user role:", err)
       } finally {
