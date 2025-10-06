@@ -49,15 +49,9 @@ export default function AuthCallbackPage() {
       document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=strict`;
     };
 
-    const renderAccessDenied = (email: string) => {
-      const container = document.getElementById("auth-callback-root");
-      if (container) {
-        container.innerText = JSON.stringify(
-          { detail: `No role found for user: ${email}` },
-          null,
-          2
-        );
-      }
+    const redirectAccessDenied = (email: string) => {
+      const target = `/auth/access-denied?email=${encodeURIComponent(email)}`;
+      router.replace(target);
     };
 
     const handleAuth = async () => {
@@ -88,9 +82,8 @@ export default function AuthCallbackPage() {
         );
 
         if (!roleRes.ok) {
-          // Show required detail message
           clearCookie("access_token");
-          renderAccessDenied(email);
+          redirectAccessDenied(email);
           return;
         }
 
@@ -102,7 +95,7 @@ export default function AuthCallbackPage() {
           clearCookie("access_token");
           clearCookie("user_role");
           clearCookie("user_email");
-          renderAccessDenied(email);
+          redirectAccessDenied(email);
           return;
         }
 
@@ -113,7 +106,7 @@ export default function AuthCallbackPage() {
         router.replace("/");
       } catch {
         clearCookie("access_token");
-        renderAccessDenied(email || "unknown");
+        redirectAccessDenied(email || "unknown");
       }
     };
 
