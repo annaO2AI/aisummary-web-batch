@@ -1,126 +1,132 @@
-"use client";
+"use client"
 
-import React, { useEffect, useState } from 'react';
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { API_ROUTES } from "../../constants/api";
-import { fetchWithAuth } from "../../utils/axios";
-import { decodeJWT } from "@/app/utils/decodeJWT";
+import React, { useEffect, useState } from "react"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+import { API_ROUTES } from "../../constants/api"
+import { fetchWithAuth } from "../../utils/axios"
+import { decodeJWT } from "@/app/utils/decodeJWT"
 
 function getInitials(firstName: string, lastName: string): string {
-  if (!firstName && !lastName) return "";
-  if (!lastName) return firstName[0].toUpperCase();
-  return (firstName[0] + lastName[0]).toUpperCase();
+  if (!firstName && !lastName) return ""
+  if (!lastName) return firstName[0].toUpperCase()
+  return (firstName[0] + lastName[0]).toUpperCase()
 }
 
 const ProfileCard: React.FC = () => {
-  const [scrolled, setScrolled] = useState(false);
-  const [firstName, setFirstName] = useState<string | null>(null);
-  const [lastName, setLastName] = useState<string | null>(null);
-  const [useremail, setUseremail] = useState<string | null>(null);
-  const [useAccess, setUseAccess] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
+  const [scrolled, setScrolled] = useState(false)
+  const [firstName, setFirstName] = useState<string | null>(null)
+  const [lastName, setLastName] = useState<string | null>(null)
+  const [useremail, setUseremail] = useState<string | null>(null)
+  const [useAccess, setUseAccess] = useState<Record<string, string>>({})
+  const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
-  const initials = firstName ? getInitials(firstName, lastName || "") : "";
+  const initials = firstName ? getInitials(firstName, lastName || "") : ""
 
   useEffect(() => {
-    const cookies = document.cookie.split(";").map((c) => c.trim());
+    const cookies = document.cookie.split(";").map((c) => c.trim())
     const token = cookies
       .find((c) => c.startsWith("access_token="))
-      ?.split("=")[1];
+      ?.split("=")[1]
 
     if (!token) {
-      console.log("No access token found in cookies");
-      setLoading(false);
-      return;
+      console.log("No access token found in cookies")
+      setLoading(false)
+      return
     }
 
-    console.log("Access token:", token);
+    console.log("Access token:", token)
 
-    const decoded = decodeJWT(token);
+    const decoded = decodeJWT(token)
     if (!decoded) {
-      console.log("Failed to decode JWT");
-      setLoading(false);
-      return;
+      console.log("Failed to decode JWT")
+      setLoading(false)
+      return
     }
 
-    console.log('Decoded JWT:', decoded);
+    console.log("Decoded JWT:", decoded)
 
     if (decoded?.name) {
-      const fullName = decoded.name.trim();
-      const nameParts = fullName.split(" ");
+      const fullName = decoded.name.trim()
+      const nameParts = fullName.split(" ")
       if (nameParts.length > 1) {
-        setFirstName(nameParts[0]);
-        setLastName(nameParts[nameParts.length - 1]);
+        setFirstName(nameParts[0])
+        setLastName(nameParts[nameParts.length - 1])
       } else {
-        setFirstName(fullName);
-        setLastName(null);
+        setFirstName(fullName)
+        setLastName(null)
       }
-      console.log("First name set:", nameParts[0]);
-      console.log("Last name set:", nameParts[nameParts.length - 1] || "N/A");
+      console.log("First name set:", nameParts[0])
+      console.log("Last name set:", nameParts[nameParts.length - 1] || "N/A")
     }
 
     if (decoded?.email || decoded?.Email || decoded?.user_email) {
-      setUseremail(decoded.email || decoded.Email || decoded.user_email);
-      console.log("Useremail set:", decoded.email || decoded.Email || decoded.user_email);
+      setUseremail(decoded.email || decoded.Email || decoded.user_email)
+      console.log(
+        "Useremail set:",
+        decoded.email || decoded.Email || decoded.user_email
+      )
     } else {
-      console.log("No email found in decoded JWT");
+      console.log("No email found in decoded JWT")
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    const onScroll = () => setScrolled(window.scrollY > 10)
+    window.addEventListener("scroll", onScroll)
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
 
   useEffect(() => {
     const fetchUseaccess = async () => {
       if (!useremail) {
-        console.log("Skipping API call: useremail is not yet set");
-        setLoading(false);
-        return;
+        console.log("Skipping API call: useremail is not yet set")
+        setLoading(false)
+        return
       }
 
-      const url = `${API_ROUTES.useaccess}?email=${useremail}`;
-      console.log("Fetching user role from:", url);
+      const url = `${API_ROUTES.useaccess}?email=${useremail}`
+      console.log("Fetching user role from:", url)
 
       try {
-        const res = await fetchWithAuth(url);
+        const res = await fetchWithAuth(url)
         if (!res.ok) {
-           document.cookie = "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=strict";
-          throw new Error(`HTTP error! Status: ${res.status}`);
-        }else{
- const data = await res.json();
-        console.log("User role response:", data);
-        setUseAccess(data);
+          throw new Error(`HTTP error! Status: ${res.status}`)
         }
-       
+        const data = await res.json()
+        console.log("User role response:", data)
+        setUseAccess(data)
       } catch (err) {
+        document.cookie =
+          "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=strict"
+
         if (err instanceof Error) {
-          console.error("Failed to fetch user role:", err.message);
+          console.error("Failed to fetch user role:", err.message)
         } else {
-          console.error("Failed to fetch user role:", err);
+          console.error("Failed to fetch user role:", err)
         }
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchUseaccess();
-  }, [useremail]);
+    fetchUseaccess()
+  }, [useremail])
 
   const handleLogout = () => {
     // Show confirmation dialog
-    const confirmLogout = window.confirm("Are you sure you want to log out?");
+    const confirmLogout = window.confirm("Are you sure you want to log out?")
     if (confirmLogout) {
       // Clear the access token cookie
-      document.cookie = "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=strict";
+      document.cookie =
+        "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=strict"
       // Redirect to the root path, middleware will handle the redirect to login
-      router.replace("https://aisummary-api-usc-geemebfqfmead8f4.centralus-01.azurewebsites.net");
+      router.replace(
+        "https://aisummary-api-usc-geemebfqfmead8f4.centralus-01.azurewebsites.net"
+      )
     }
-  };
+  }
 
   return (
     <div className="mx-auto p-6 bg-white rounded-lg">
@@ -142,7 +148,9 @@ const ProfileCard: React.FC = () => {
           <div className="grid grid-cols-2 gap-4 mb-6">
             <div>
               <p className="text-gray-500">First name</p>
-              <p className="text-gray-800 font-medium">{firstName || "Loading..."}</p>
+              <p className="text-gray-800 font-medium">
+                {firstName || "Loading..."}
+              </p>
             </div>
             <div>
               <p className="text-gray-500">Last name</p>
@@ -150,7 +158,9 @@ const ProfileCard: React.FC = () => {
             </div>
             <div>
               <p className="text-gray-500">Email</p>
-              <p className="text-blue-600 font-medium">{useremail || "Loading..."}</p>
+              <p className="text-blue-600 font-medium">
+                {useremail || "Loading..."}
+              </p>
             </div>
             <div>
               <p className="text-gray-500">Role</p>
@@ -161,7 +171,9 @@ const ProfileCard: React.FC = () => {
           </div>
           <hr />
           <div className="w-full pt-4">
-            <h3 className="text-xl font-semibold text-gray-800 ">Login-Methods</h3>
+            <h3 className="text-xl font-semibold text-gray-800 ">
+              Login-Methods
+            </h3>
             <p className="text-gray-500 mb-4">Login into O2.ai</p>
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg mb-4 border-o2">
               <div className="flex items-center">
@@ -211,7 +223,7 @@ const ProfileCard: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProfileCard;
+export default ProfileCard

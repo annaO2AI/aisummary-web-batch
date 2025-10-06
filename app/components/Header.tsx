@@ -31,7 +31,6 @@
 //   const [loading, setLoading] = useState(true)
 
 //   const initials = username ? getInitials(username) : ""
-  
 
 //   useEffect(() => {
 //     const cookies = document.cookie.split(";").map((c) => c.trim())
@@ -74,10 +73,9 @@
 //           setLoading(false)
 //         }
 //       }
-  
+
 //       fetchUseaccess()
 //     }, [])
-  
 
 //   return (
 //     <header
@@ -141,7 +139,7 @@
 //           {/* <span className="text-gray-700 font-normal">Hi, {username}</span> */}
 //           <span className="text-gray-700 font-normal">
 //             Hi, {username || 'User'} {useAccess.role ? `(${useAccess.role})` : ''}
-            
+
 //           </span>
 //           <span className="hidden">{useremail}</span>
 //         </div>
@@ -149,7 +147,6 @@
 //     </header>
 //   )
 // }
-
 
 "use client"
 
@@ -207,7 +204,7 @@ export default function Header({ sidebarOpen }: HeaderProps) {
       return
     }
 
-    console.log('Decoded JWT:', decoded)
+    console.log("Decoded JWT:", decoded)
 
     if (decoded?.name) {
       setUsername(decoded.name)
@@ -216,7 +213,10 @@ export default function Header({ sidebarOpen }: HeaderProps) {
 
     if (decoded?.email || decoded?.Email || decoded?.user_email) {
       setUseremail(decoded.email || decoded.Email || decoded.user_email)
-      console.log("Useremail set:", decoded.email || decoded.Email || decoded.user_email)
+      console.log(
+        "Useremail set:",
+        decoded.email || decoded.Email || decoded.user_email
+      )
     } else {
       console.log("No email found in decoded JWT")
     }
@@ -242,15 +242,15 @@ export default function Header({ sidebarOpen }: HeaderProps) {
       try {
         const res = await fetchWithAuth(url)
         if (!res.ok) {
-          document.cookie = "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=strict";
           throw new Error(`HTTP error! Status: ${res.status}`)
-        }else{
-const data = await res.json()
+        }
+        const data = await res.json()
         console.log("User role response:", data)
         setUseAccess(data)
-        }
-        
       } catch (err) {
+        document.cookie =
+          "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=strict"
+
         if (err instanceof Error) {
           console.error("Failed to fetch user role:", err.message)
         } else {
@@ -281,19 +281,16 @@ const data = await res.json()
     >
       <div className="w-full max-w-7xl mx-auto px-4 flex items-center justify-between">
         <Link href="/" className="text-2xl font-bold text-gray-900">
-          <Image
-            src="/Otow-log.svg"
-            alt="Otow Logo"
-            width={86}
-            height={49}
-          />
+          <Image src="/Otow-log.svg" alt="Otow Logo" width={86} height={49} />
         </Link>
 
         <nav className="hidden md:flex space-x-3">
           <Link
             href="/"
             className={`transition ${
-              pathname === "/" ? "ot-title font-semibold activenavigation py-2 px-4 rounded-md" : "text-gray-700 hover:ot-title py-2 px-4 rounded-md"
+              pathname === "/"
+                ? "ot-title font-semibold activenavigation py-2 px-4 rounded-md"
+                : "text-gray-700 hover:ot-title py-2 px-4 rounded-md"
             }`}
           >
             Call Summary
@@ -326,7 +323,7 @@ const data = await res.json()
           </div>
           <span className="text-gray-700 font-normal">
             {/* Hi, {username || 'User'} {useAccess.role ? `(${useAccess.role})` : loading ? '(...)' : ''} */}
-             Hi, {username || 'User'}
+            Hi, {username || "User"}
           </span>
           <span className="hidden">{useremail}</span>
         </button>
