@@ -118,13 +118,18 @@ const ProfileCard: React.FC = () => {
     // Show confirmation dialog
     const confirmLogout = window.confirm("Are you sure you want to log out?")
     if (confirmLogout) {
-      // Clear the access token cookie
-      document.cookie =
-        "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=strict"
-      // Redirect to the root path, middleware will handle the redirect to login
-      router.replace(
-        "https://aisummary-api-usc-geemebfqfmead8f4.centralus-01.azurewebsites.net"
-      )
+      // Clear auth cookies
+      document.cookie = "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=strict"
+      document.cookie = "user_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=strict"
+      document.cookie = "user_email=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=strict"
+      // Clear token from localStorage if used
+      try {
+        localStorage.removeItem("access_token")
+      } catch {}
+      // Redirect to centralized login (same as middleware)
+      const redirectTo = `${window.location.origin}/auth/callback`
+      const loginUrl = `https://ai-call-summary-ap-batch-fjfxdsdhdkd5b7bt.centralus-01.azurewebsites.net?redirect_uri=${encodeURIComponent(redirectTo)}`
+      router.replace(loginUrl)
     }
   }
 
