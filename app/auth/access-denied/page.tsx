@@ -38,7 +38,7 @@ function AccessDeniedContent() {
             <>No role found for this user.</>
           )}
         </p>
-        <div className="flex items-center justify-center gap-3">
+        {/* <div className="flex items-center justify-center gap-3">
           <button
             onClick={handleBackToLogin}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
@@ -51,7 +51,7 @@ function AccessDeniedContent() {
           >
             Go Home
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   )
