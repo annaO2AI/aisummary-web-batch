@@ -249,7 +249,7 @@ const Dashboard = () => {
                 <Toast
                   open={isToast}
                   title="Success!"
-                  description="Anomaly Detection"
+                  description="Anomaly detected"
                   buttonText="Close"
                   onButtonClick={() => setIsToast(false)}
                 />
