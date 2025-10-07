@@ -28,7 +28,7 @@ export default function AnomalyDetection({
     <div className="flex justify-between rounded-xl shadow-sm bg-white anomalyDetaction-main-bg mb-12">
       <div>
         <div className="flex items-center justify-between p-6 pl-12 pb-0">
-          <h2 className=" text-white text-[26px]">Anomaly Detection</h2>
+          <h2 className=" text-white text-[26px]">Anomaly detected</h2>
           {/* <span
             className={
               "text-xs px-2 py-1 rounded-full " +
