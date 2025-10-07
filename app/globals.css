@@ -405,6 +405,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
+    background-color: #ff000027;
   }
   .Anomaly-Detection-text{
     margin-left: 110px;
