@@ -18,21 +18,37 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, fileName }) => {
 
   useEffect(() => {
     const audio = audioRef.current
-    if (!audio || !src) return
+    if (!audio || !src) {
+      setLoading(false)
+      return
+    }
 
+    // Reset state
     setLoading(true)
     setError(false)
     setIsPlaying(false)
+    setCurrentTime(0)
+    setDuration(0)
 
     const onLoaded = () => {
-      setDuration(audio.duration)
-      setLoading(false)
+      if (audio.duration && !isNaN(audio.duration)) {
+        setDuration(audio.duration)
+        setLoading(false)
+      }
     }
     
-    const onTimeUpdate = () => setCurrentTime(audio.currentTime)
-    const onEnded = () => setIsPlaying(false)
+    const onTimeUpdate = () => {
+      if (audio.currentTime !== undefined) {
+        setCurrentTime(audio.currentTime)
+      }
+    }
     
-    const onError = (e: Event) => {
+    const onEnded = () => {
+      setIsPlaying(false)
+      setCurrentTime(0)
+    }
+    
+    const onError = () => {
       console.error("Audio loading error:", audio.error)
       setError(true)
       setLoading(false)
@@ -42,50 +58,66 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, fileName }) => {
       setLoading(false)
     }
 
+    const onLoadStart = () => {
+      setLoading(true)
+    }
+
     audio.addEventListener("loadedmetadata", onLoaded)
     audio.addEventListener("timeupdate", onTimeUpdate)
     audio.addEventListener("ended", onEnded)
     audio.addEventListener("error", onError)
     audio.addEventListener("canplay", onCanPlay)
+    audio.addEventListener("loadstart", onLoadStart)
 
-    // Trigger load when src changes
+    // Load the audio
     audio.load()
 
     return () => {
+      // Pause and cleanup
+      audio.pause()
       audio.removeEventListener("loadedmetadata", onLoaded)
       audio.removeEventListener("timeupdate", onTimeUpdate)
       audio.removeEventListener("ended", onEnded)
       audio.removeEventListener("error", onError)
       audio.removeEventListener("canplay", onCanPlay)
+      audio.removeEventListener("loadstart", onLoadStart)
     }
   }, [src])
 
-  const togglePlay = () => {
+  const togglePlay = async () => {
     const audio = audioRef.current
-    if (!audio || loading || error) return
+    if (!audio || loading || error || !src) return
 
-    if (isPlaying) {
-      audio.pause()
+    try {
+      if (isPlaying) {
+        audio.pause()
+        setIsPlaying(false)
+      } else {
+        // Reset if at the end
+        if (audio.ended) {
+          audio.currentTime = 0
+        }
+        await audio.play()
+        setIsPlaying(true)
+      }
+    } catch (err) {
+      console.error("Playback error:", err)
+      setError(true)
       setIsPlaying(false)
-    } else {
-      audio.play()
-        .then(() => setIsPlaying(true))
-        .catch((error) => {
-          console.error("Playback error:", error)
-          setError(true)
-        })
     }
   }
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const time = parseFloat(e.target.value)
-    if (audioRef.current) {
-      audioRef.current.currentTime = time
+    const audio = audioRef.current
+    if (audio && !isNaN(time)) {
+      audio.currentTime = time
       setCurrentTime(time)
     }
   }
 
   const extractFileName = (url: string) => {
+    if (!url) return "Unknown"
     // Extract the filename before query parameters from Azure URL
     const urlPath = url.split("?")[0]
     const parts = urlPath.split("/")
@@ -93,7 +125,9 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, fileName }) => {
   }
 
   const formatTime = (t: number) =>
-    isNaN(t) ? "00:00" : new Date(t * 1000).toISOString().substring(14, 19)
+    isNaN(t) || !isFinite(t) ? "00:00" : new Date(t * 1000).toISOString().substring(14, 19)
+
+  const displayFileName = fileName || extractFileName(src)
 
   return (
     <div className="w-[225px] p-3 rounded-xl border border-gray-200 shadow-sm bg-white dashbord-main-audio-not">
@@ -108,8 +142,8 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, fileName }) => {
         <div className="text-blue-600 text-lg">
           <Mic />
         </div>
-        <div className="truncate text-sm font-semibold text-gray-700 max-w-xs">
-          {fileName || extractFileName(src)}
+        <div className="truncate text-sm font-semibold text-gray-700 max-w-xs" title={displayFileName}>
+          {displayFileName}
         </div>
       </div>
 
@@ -122,11 +156,11 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, fileName }) => {
       <div className="flex items-center mt-3 space-x-2">
         <button
           onClick={togglePlay}
-          disabled={loading || error}
-          className={`w-10 h-10 rounded-full flex items-center justify-center text-white shadow-md ${
-            loading || error 
+          disabled={loading || error || !src}
+          className={`w-10 h-10 rounded-full flex items-center justify-center text-white shadow-md transition-colors ${
+            loading || error || !src
               ? "bg-gray-400 cursor-not-allowed" 
-              : "bg-blue-500 hover:bg-blue-600"
+              : "bg-blue-500 hover:bg-blue-600 active:bg-blue-700"
           }`}
         >
           {loading ? (
@@ -173,12 +207,12 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, fileName }) => {
       <input
         type="range"
         min={0}
-        max={duration}
+        max={duration || 0}
         value={currentTime}
         step={0.1}
         onChange={handleSeek}
-        disabled={loading || error}
-        className="w-full mt-1 accent-blue-500 disabled:opacity-50"
+        disabled={loading || error || !src || !duration}
+        className="w-full mt-1 accent-blue-500 disabled:opacity-50 cursor-pointer"
       />
     </div>
   )
