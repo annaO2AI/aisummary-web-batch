@@ -229,7 +229,6 @@ const Dashboard = () => {
     })
   )
 
-  console.log(progress, "progress")
 
   return (
     <>
@@ -326,6 +325,7 @@ const Dashboard = () => {
                         emailSent={graphData?.email_sent ?? []}
                         audioId={graphData?.id}
                         sentimentScore={graphData?.sentiment_score ?? 0}
+                        incidentNumber={graphData?.inc_number || ""}
                       />
                       {/* anomaly-detection component */}
                       {(() => {
