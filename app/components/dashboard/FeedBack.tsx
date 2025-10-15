@@ -144,8 +144,8 @@ export default function FeedbackModal({
 
     try {
       const formData = new URLSearchParams()
-      formData.append('incident_num', editableIncidentNum.trim())
-      formData.append('rate', selectedRating)
+      formData.append('incident_number', editableIncidentNum.trim())
+      formData.append('rate', selectedRating.toLowerCase())
       formData.append('feedback', feedback || '')
 
       const response = await fetch(
