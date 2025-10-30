@@ -293,7 +293,7 @@ export default function Header({ sidebarOpen }: HeaderProps) {
                 : "text-gray-700 hover:ot-title py-2 px-4 rounded-md"
             }`}
           >
-            Call Summary
+            Service Desk AI
           </Link>
           {/* <Link
             href="/about"

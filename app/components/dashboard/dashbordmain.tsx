@@ -73,10 +73,9 @@ export default function Dashbordmain({setProgress}:{
           <div className="space-y-6">
             <div className="flex flex-col items-left justify-center">
               <LoganimationsIcon width={73} />
-              <div className="text-4xl font-bold w-2xl otitle mt-4 mb-4">
+              <div className="text-[50px] font-bold w-2xl otitle mt-4 mb-4 leading-[1.2]">
                 Hi, {username}<br></br>
-                AI-Powered Call Summaries with
-                Sentiment Intelligence
+                Welcome to Service Desk AI
               </div>
               <p className="osubtitle text-base">
                 Instantly convert conversations into clear, actionable summaries. <br />
