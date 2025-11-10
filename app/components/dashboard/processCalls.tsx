@@ -360,7 +360,7 @@ const CallProcessor: React.FC = () => {
                   onClick={() => toggleSection("summary")}
                   className="flex items-center justify-between w-full text-left font-medium text-gray-700"
                 >
-                  Call Summary
+                  Service Desk AI
                   <svg
                     className={`w-4 h-4 transform ${
                       expandedSections.summary ? "rotate-180" : ""

@@ -75,7 +75,7 @@ export default function AudioSelector({
 
         try {
           const response = await fetch(
-            `https://ai-call-summary-api-hpb0afdgbtb6e5ca.centralus-01.azurewebsites.net/audio/${filename}`,
+            `https://ai-call-summary-ap-batch-fjfxdsdhdkd5b7bt.centralus-01.azurewebsites.net/audio/${filename}`,
             {
               method: 'GET',
               headers: {

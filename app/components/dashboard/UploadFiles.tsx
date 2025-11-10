@@ -1,7 +1,7 @@
 //UploadFiles.tsx
 "use client";
-import React, { useState, ChangeEvent, DragEvent } from "react";
-import { Upload, File, AlertCircle, Loader2, CheckCircle } from "lucide-react";
+import React, { useState, ChangeEvent, useEffect } from "react";
+import { Upload, AlertCircle, Loader2, CheckCircle } from "lucide-react";
 import Image from "next/image";
 
 // Type definitions
@@ -20,10 +20,16 @@ interface IncidentResponse {
   valid: boolean;
 }
 
+interface FileItem {
+  original_name: string;
+  datetime: string;
+  filename: string;
+}
+
 type ApiResponse = SuccessResponse | ErrorResponse;
 
 const AudioUploadComponent: React.FC = () => {
-  const [file, setFile] = useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = useState<string>("");
   const [uploading, setUploading] = useState<boolean>(false);
   const [response, setResponse] = useState<SuccessResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -32,35 +38,47 @@ const AudioUploadComponent: React.FC = () => {
   const [isValidating, setIsValidating] = useState<boolean>(false);
   const [incidentSuccess, setIncidentSuccess] = useState<string | null>(null);
   const [incidentError, setIncidentError] = useState<string | null>(null);
+  const [previousFiles, setPreviousFiles] = useState<FileItem[]>([]);
+  const [loadingFiles, setLoadingFiles] = useState<boolean>(false);
+  const [filesError, setFilesError] = useState<string | null>(null);
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    const selectedFile = event.target.files?.[0];
-    if (selectedFile) {
-      if (selectedFile.type === "application/pdf") {
-        setFile(selectedFile);
-        setError(null);
-        setResponse(null);
+  // Fetch previous files on component mount
+  useEffect(() => {
+    fetchPreviousFiles();
+  }, []);
+
+  const fetchPreviousFiles = async (): Promise<void> => {
+    setLoadingFiles(true);
+    setFilesError(null);
+    try {
+      const res = await fetch(
+        "https://ai-call-summary-ap-batch-fjfxdsdhdkd5b7bt.centralus-01.azurewebsites.net/files",
+        {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+          },
+        }
+      );
+
+      if (res.ok) {
+        const data: FileItem[] = await res.json();
+        setPreviousFiles(data);
       } else {
-        setError("Please select a valid PDF file.");
-        setFile(null);
+        setFilesError("Failed to load files list");
       }
+    } catch (err) {
+      setFilesError("Error loading files list");
+      console.error("Error fetching files:", err);
+    } finally {
+      setLoadingFiles(false);
     }
   };
 
-  const handleDrop = (event: DragEvent<HTMLDivElement>): void => {
-    event.preventDefault();
-    const droppedFile = event.dataTransfer.files[0];
-    if (droppedFile && droppedFile.type === "application/pdf") {
-      setFile(droppedFile);
-      setError(null);
-      setResponse(null);
-    } else {
-      setError("Please drop a valid PDF file.");
-    }
-  };
-
-  const handleDragOver = (event: DragEvent<HTMLDivElement>): void => {
-    event.preventDefault();
+  const handleFileSelect = (filename: string): void => {
+    setSelectedFile(filename);
+    setError(null);
+    setResponse(null);
   };
 
   const validateIncidentNumber = async (incNumber: string): Promise<void> => {
@@ -124,57 +142,59 @@ const AudioUploadComponent: React.FC = () => {
     }
   };
 
-  const uploadFile = async (): Promise<void> => {
-    if (!file || isIncidentValid === false || !incidentNumber) {
-      if (isIncidentValid === false || !incidentNumber) {
-        setIncidentError("Please enter a valid Incident Number.");
-      }
-      return;
+const uploadFile = async (): Promise<void> => {
+  if (!selectedFile || isIncidentValid === false || !incidentNumber) {
+    if (!selectedFile) {
+      setError("Please select a file from the list.");
     }
-
-    setUploading(true);
-    setError(null);
-    setResponse(null);
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const formData = new FormData();
-      formData.append("incident_number", incidentNumber);
-      formData.append("file", file);
-
-      const res = await fetch(
-        "https://ai-call-summary-ap-batch-fjfxdsdhdkd5b7bt.centralus-01.azurewebsites.net/upload-report-to-incident",
-        {
-          method: "POST",
-          headers: {
-        accept: "application/json",
-        // Do NOT set Content-Type header; browser will set it with boundary for multipart/form-data
-          },
-          body: formData,
-        }
-      );
-
-      const data: ApiResponse = await res.json();
-
-      if (res.ok) {
-        setResponse(data as SuccessResponse);
-      } else {
-        const errorData = data as ErrorResponse;
-        setError(errorData.detail || "Upload failed");
-      }
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Unknown error occurred";
-      setError("Network error: " + errorMessage);
-    } finally {
-      setUploading(false);
+    if (isIncidentValid === false || !incidentNumber) {
+      setIncidentError("Please enter a valid Incident Number.");
     }
-  };
+    return;
+  }
+
+  setUploading(true);
+  setError(null);
+  setResponse(null);
+
+  try {
+    // Use URLSearchParams instead of FormData for x-www-form-urlencoded
+    const params = new URLSearchParams();
+    params.append("incident_number", incidentNumber);
+    params.append("blob_file_name", selectedFile);
+    params.append("file_name", selectedFile);
+
+    const res = await fetch(
+      "https://ai-call-summary-ap-batch-fjfxdsdhdkd5b7bt.centralus-01.azurewebsites.net/upload-report-to-incident-from-blob",
+      {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/x-www-form-urlencoded", // Add this header
+        },
+        body: params.toString(), // Convert to string
+      }
+    );
+
+    const data: ApiResponse = await res.json();
+
+    if (res.ok) {
+      setResponse(data as SuccessResponse);
+    } else {
+      const errorData = data as ErrorResponse;
+      setError(errorData.detail || "Upload failed");
+    }
+  } catch (err) {
+    const errorMessage =
+      err instanceof Error ? err.message : "Unknown error occurred";
+    setError("Network error: " + errorMessage);
+  } finally {
+    setUploading(false);
+  }
+};
 
   const resetUpload = (): void => {
-    setFile(null);
+    setSelectedFile("");
     setResponse(null);
     setError(null);
     setIncidentNumber("");
@@ -183,52 +203,109 @@ const AudioUploadComponent: React.FC = () => {
     setIncidentError(null);
   };
 
-  const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes: string[] = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  const formatDateTime = (datetime: string): string => {
+    // Format: YYYYMMDDHHMMSS to DD/MM/YYYY HH:MM:SS
+    const year = datetime.substring(0, 4);
+    const month = datetime.substring(4, 6);
+    const day = datetime.substring(6, 8);
+    const hour = datetime.substring(8, 10);
+    const minute = datetime.substring(10, 12);
+    const second = datetime.substring(12, 14);
+    
+    return `${day}/${month}/${year} ${hour}:${minute}:${second}`;
   };
 
   return (
     <div className="max-w-2xl mx-auto p-6">
       <div className="text-left mb-6">
-        <h2 className="text-2xl font-bold ot-title">Upload Manually File</h2>
-        <p className="font-sm osubtitle">Upload your file for processing</p>
+        <h2 className="text-2xl font-bold ot-title">Upload File</h2>
+        <p className="font-sm osubtitle">Select a file and enter incident number for processing</p>
       </div>
 
-      {/* File Upload Area */}
+      {/* Files List Section */}
       {!response && (
         <div>
-          <div
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-blue-400 transition-colors cursor-pointer"
-          >
-            <Image
-              src="/browseafile-audio.svg"
-              alt="Browse files"
-              width={188}
-              height={81}
-              className="max-w-md m-auto mb-6"
-            />
-            <label className="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer transition-colors">
-              <span>Browse Files</span>
-              <input
-                type="file"
-                accept="application/pdf"
-                onChange={handleFileChange}
-                className="hidden"
-              />
-            </label>
-            <p className="text-xs text-gray-500 mt-2 osubtitle">
-              Supported formats: PDF
-            </p>
+          <div className="mb-6">
+            <h3 className="text-md font-semibold mb-3 osubtitle">
+              Select File to Upload
+            </h3>
+            {loadingFiles ? (
+              <div className="flex justify-center items-center py-8">
+                <Loader2 className="animate-spin h-6 w-6 text-blue-500 mr-2" />
+                <span className="osubtitle">Loading files...</span>
+              </div>
+            ) : filesError ? (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <div className="flex items-center">
+                  <AlertCircle className="h-5 w-5 text-yellow-500 mr-2" />
+                  <p className="text-yellow-700 text-sm">{filesError}</p>
+                </div>
+                <button
+                  onClick={fetchPreviousFiles}
+                  className="mt-2 px-3 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 text-sm"
+                >
+                  Retry
+                </button>
+              </div>
+            ) : previousFiles.length > 0 ? (
+              <div className="relative">
+                <select
+                  className="w-full h-[45px] appearance-none px-4 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onChange={(e) => handleFileSelect(e.target.value)}
+                  value={selectedFile}
+                >
+                  <option value="" disabled>
+                    Select a file
+                  </option>
+                  {previousFiles.map((fileItem, index) => (
+                    <option key={index} value={fileItem.filename}>
+                      {fileItem.filename} - {formatDateTime(fileItem.datetime)}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
+                  <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1.10378 1.09419L5.82044 6.00739L10.5371 1.09419" stroke="#34334B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+                <p className="text-gray-500 osubtitle">No files available</p>
+              </div>
+            )}
           </div>
-          <div className="pt-6 rounded-lg">
+
+          {/* Selected File Display */}
+          {selectedFile && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="h-5 w-5 text-green-500" />
+                  <div>
+                    <p className="font-medium text-sm ot-title">
+                      Selected File: {selectedFile}
+                    </p>
+                    <p className="text-xs text-blue-600 osubtitle">
+                      File ready for upload
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setSelectedFile("")}
+                  className="text-blue-500 hover:text-blue-700 text-sm font-medium"
+                  type="button"
+                >
+                  Change File
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Incident Number Input */}
+          <div className="pt-4 rounded-lg">
             <h2 className="text-md font-semibold mb-1 osubtitle">
-              Manually add Incident Number
+              Enter Incident Number
             </h2>
             <div className="relative">
               <input
@@ -237,7 +314,7 @@ const AudioUploadComponent: React.FC = () => {
                 value={incidentNumber}
                 onChange={handleIncidentChange}
                 onBlur={handleIncidentBlur}
-                className={`w-full p-2 border rounded-md mb-2 focus:outline-none focus:ring-2 ${
+                className={`w-full p-3 border rounded-md mb-2 focus:outline-none focus:ring-2 ${
                   isIncidentValid === false
                     ? "border-red-500 focus:ring-red-500"
                     : isIncidentValid === true
@@ -246,9 +323,10 @@ const AudioUploadComponent: React.FC = () => {
                 }`}
               />
               {isValidating && (
-                <Loader2 className="absolute right-2 top-2 h-5 w-5 animate-spin text-gray-500" />
+                <Loader2 className="absolute right-3 top-3 h-5 w-5 animate-spin text-gray-500" />
               )}
             </div>
+            
             {/* Incident Success Message */}
             {incidentSuccess && (
               <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
@@ -258,6 +336,7 @@ const AudioUploadComponent: React.FC = () => {
                 </div>
               </div>
             )}
+            
             {/* Incident Error Message */}
             {incidentError && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
@@ -267,85 +346,33 @@ const AudioUploadComponent: React.FC = () => {
                 </div>
               </div>
             )}
-            {!file && !response && (
-              <div className="flex justify-end space-x-4">
-                <button
-                  onClick={resetUpload}
-                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
-                >
-                  Cancel
-                </button>
-                <button
-                  disabled={uploading || isIncidentValid === false || !incidentNumber}
-                  className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <Upload className="h-4 w-4 mr-2" />
-                  Upload File
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
 
-      {/* Selected File Display */}
-      {file && !response && (
-        <div className="rounded-lg mb-4">
-          <div className="self-start flex justify-between bg-white border-2 border-dashed border-blue-300 rounded-lg p-4 text-center hover:border-blue-400 transition-colors cursor-pointer mb-4">
-            <div className="flex items-center space-x-3">
-              <File className="h-8 w-8 text-blue-500" />
-              <div>
-                <p className="font-medium ot-title">{file.name}</p>
-                <p className="text-sm text-left osubtitle">
-                  {formatFileSize(file.size)} • {file.type}
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={resetUpload}
-              className="text-gray-500 hover:text-red-500 text-sm"
-              type="button"
-            >
-              <svg
-                width="26"
-                height="20"
-                viewBox="0 0 26 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+            {/* Action Buttons */}
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={resetUpload}
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors"
               >
-                <path
-                  d="M13.5859 2C18.0042 2 21.5859 5.58172 21.5859 10C21.5859 14.4183 18.0042 18 13.5859 18C9.16766 18 5.58594 14.4183 5.58594 10C5.58594 5.58172 9.16766 2 13.5859 2ZM13.5859 3C9.71994 3 6.58594 6.13401 6.58594 10C6.58594 13.866 9.71994 17 13.5859 17C17.4519 17 20.5859 13.866 20.5859 10C20.5859 6.13401 17.4519 3 13.5859 3ZM11.3954 7.11372L11.4646 7.17157L13.5859 9.29289L15.7073 7.17157C15.8808 6.99801 16.1502 6.97872 16.3451 7.11372L16.4144 7.17157C16.5879 7.34514 16.6072 7.61456 16.4722 7.80943L16.4144 7.87868L14.293 10L16.4144 12.1213C16.5879 12.2949 16.6072 12.5643 16.4722 12.7592L16.4144 12.8284C16.2408 13.002 15.9714 13.0213 15.7765 12.8863L15.7073 12.8284L13.5859 10.7071L11.4646 12.8284C11.2911 13.002 11.0216 13.0213 10.8268 12.8863L10.7575 12.8284C10.5839 12.6549 10.5647 12.3854 10.6997 12.1906L10.7575 12.1213L12.8788 10L10.7575 7.87868C10.5839 7.70511 10.5647 7.43569 10.6997 7.24082L10.7575 7.17157C10.9311 6.99801 11.2005 6.97872 11.3954 7.11372Z"
-                  fill="#8180AA"
-                />
-              </svg>
-            </button>
-          </div>
-          <div className="flex justify-end space-x-4">
-            <button
-              onClick={resetUpload}
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors"
-              type="button"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={uploadFile}
-              disabled={uploading || isIncidentValid === false || !incidentNumber}
-              className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              type="button"
-            >
-              {uploading ? (
-                <>
-                  <Loader2 className="animate-spin h-4 w-4 mr-2" />
-                  Uploading...
-                </>
-              ) : (
-                <>
-                  <Upload className="h-4 w-4 mr-2" />
-                  Upload File
-                </>
-              )}
-            </button>
+                Cancel
+              </button>
+              <button
+                onClick={uploadFile}
+                disabled={uploading || !selectedFile || isIncidentValid === false || !incidentNumber}
+                className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {uploading ? (
+                  <>
+                    <Loader2 className="animate-spin h-4 w-4 mr-2" />
+                    Uploading...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload File
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -365,28 +392,6 @@ const AudioUploadComponent: React.FC = () => {
               Upload Successful!
             </h3>
           </div>
-         {/* 
-          <div className="space-y-2 text-sm">
-            <div className="text-center osubtitle">
-              <span className="font-medium osubtitle">Filename:</span>
-              <span className="osubtitle ml-2">{response.filename}</span>
-            </div>
-            <div className="text-center osubtitle">
-              <span className="font-medium osubtitle">URL:</span>
-              <a
-                href={response.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="osubtitle hover:text-blue-800 underline ml-2 break-all"
-              >
-                File Link
-              </a>
-            </div>
-            <div className="text-center osubtitle">
-              <span className="font-medium osubtitle">Message:</span>
-              <span className="osubtitle ml-2">{response.message}</span>
-            </div>
-          </div> */}
           <button
             onClick={resetUpload}
             className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors m-auto"
