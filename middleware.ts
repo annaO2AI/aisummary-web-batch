@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
 
   if (!isPublicPath && !token) {
     const redirectTo = `${request.nextUrl.origin}/auth/callback`
-    const loginUrl = `https://ai-call-summary-ap-batch-fjfxdsdhdkd5b7bt.centralus-01.azurewebsites.net?redirect_uri=${encodeURIComponent(
+    const loginUrl = `https://ai-service-desk-batch-fcb0f0g5g2gneuc0.centralus-01.azurewebsites.net?redirect_uri=${encodeURIComponent(
       redirectTo
     )}`
     return NextResponse.redirect(loginUrl)

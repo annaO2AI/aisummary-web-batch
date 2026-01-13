@@ -32,7 +32,7 @@ const AgentDetailsView: React.FC<AgentDetailsViewProps> = ({ agent, onBack }) =>
       lastFetchedAgentRef.current = agentName
       setLoading(true)
       try {
-        const url = `https://ai-call-summary-ap-batch-fjfxdsdhdkd5b7bt.centralus-01.azurewebsites.net/anomaly-agent-details?agentname=${encodeURIComponent(agentName)}`
+        const url = `https://ai-service-desk-batch-fcb0f0g5g2gneuc0.centralus-01.azurewebsites.net/anomaly-agent-details?agentname=${encodeURIComponent(agentName)}`
         const res = await fetch(url, { method: 'POST', headers: { accept: 'application/json' }, body: '' })
         if (!res.ok) {
           setAnomalyDetails([])

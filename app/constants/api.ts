@@ -4,7 +4,7 @@
 // // "https://aisummary-api-fue6a9gxabdceng4.canadacentral-01.azurewebsites.net"
 // "https://aisummary-api-fue6a9gxabdceng4.centralus-01.azurewebsites.net"
 
-const API_BASE_URL = "https://ai-call-summary-ap-batch-fjfxdsdhdkd5b7bt.centralus-01.azurewebsites.net"
+const API_BASE_URL = "https://ai-service-desk-batch-fcb0f0g5g2gneuc0.centralus-01.azurewebsites.net"
 
 const API_BASE_URL_AISEARCH =
   process.env.NEXT_PUBLIC_API_BASE_URL_AISEARCH ||

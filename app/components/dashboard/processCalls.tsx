@@ -70,7 +70,7 @@ const CallProcessor: React.FC = () => {
     const fetchModels = async () => {
       try {
         const response = await fetch(
-          "https://ai-call-summary-ap-batch-fjfxdsdhdkd5b7bt.centralus-01.azurewebsites.net/models",
+          "https://ai-service-desk-batch-fcb0f0g5g2gneuc0.centralus-01.azurewebsites.net/models",
           {
             method: "GET",
             headers: {
@@ -146,7 +146,7 @@ const CallProcessor: React.FC = () => {
 
     try {
       const response = await fetch(
-        "https://ai-call-summary-ap-batch-fjfxdsdhdkd5b7bt.centralus-01.azurewebsites.net/process-calls",
+        "https://ai-service-desk-batch-fcb0f0g5g2gneuc0.centralus-01.azurewebsites.net/process-calls",
         {
           method: "POST",
           headers: {

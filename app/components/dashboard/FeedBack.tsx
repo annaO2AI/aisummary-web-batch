@@ -65,7 +65,7 @@ export default function FeedbackModal({
 
     try {
       const res = await fetch(
-        `https://ai-call-summary-ap-batch-fjfxdsdhdkd5b7bt.centralus-01.azurewebsites.net/check-incidient-number?inc_number=${encodeURIComponent(
+        `https://ai-service-desk-batch-fcb0f0g5g2gneuc0.centralus-01.azurewebsites.net/check-incidient-number?inc_number=${encodeURIComponent(
           incNumber
         )}`,
         {
@@ -149,7 +149,7 @@ export default function FeedbackModal({
       formData.append('feedback', feedback || '')
 
       const response = await fetch(
-        'https://ai-call-summary-ap-batch-fjfxdsdhdkd5b7bt.centralus-01.azurewebsites.net/submit-feedback-servicenow',
+        'https://ai-service-desk-batch-fcb0f0g5g2gneuc0.centralus-01.azurewebsites.net/submit-feedback-servicenow',
         {
           method: 'POST',
           headers: {

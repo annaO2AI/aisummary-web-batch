@@ -14,7 +14,7 @@ function AccessDeniedContent() {
 
   const handleBackToLogin = () => {
     const redirectTo = `${window.location.origin}/auth/callback`
-    const loginUrl = `https://ai-call-summary-ap-batch-fjfxdsdhdkd5b7bt.centralus-01.azurewebsites.net?redirect_uri=${encodeURIComponent(
+    const loginUrl = `https://ai-service-desk-batch-fcb0f0g5g2gneuc0.centralus-01.azurewebsites.net?redirect_uri=${encodeURIComponent(
       redirectTo
     )}`
     router.replace(loginUrl)
