@@ -11,9 +11,10 @@ export function middleware(request: NextRequest) {
 
   if (!isPublicPath && !token) {
     const redirectTo = `${request.nextUrl.origin}/auth/callback`
-    const loginUrl = `https://ai-service-desk-batch-fcb0f0g5g2gneuc0.centralus-01.azurewebsites.net?redirect_uri=${encodeURIComponent(
-      redirectTo
-    )}`
+    const loginUrl = `https://ai-service-desk-batch-fcb0f0g5g2gneuc0.centralus-01.azurewebsites.net?redirect_uri=${encodeURIComponent(redirectTo)}`
+
+    console.log("Redirecting to login:", loginUrl) // ← helpful in Azure logs
+
     return NextResponse.redirect(loginUrl)
   }
 
@@ -21,5 +22,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|api/).*)"], // ← exclude api routes if needed
 }
