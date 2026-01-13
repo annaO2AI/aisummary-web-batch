@@ -127,7 +127,7 @@ const ProfileCard: React.FC = () => {
         localStorage.removeItem("access_token")
       } catch {}
       // Redirect to centralized login (same as middleware)
-      const redirectTo = `${window.location.origin}/auth/callback`
+      const redirectTo = `${window.location.origin}auth/callback`
       const loginUrl = `https://ai-service-desk-batch-fcb0f0g5g2gneuc0.centralus-01.azurewebsites.net?redirect_uri=${encodeURIComponent(redirectTo)}`
       router.replace(loginUrl)
     }
