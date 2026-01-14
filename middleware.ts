@@ -18,6 +18,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
+  
   return NextResponse.next()
 }
 
