@@ -72,7 +72,7 @@ export default function AgentFilterForm({
         <div>
           <div className="mb-4 grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
             <div className="flex flex-col gap-1">
-              <label className="text-sm text-gray-700">Start date</label>
+              <label  htmlFor="start-date" className="text-sm text-gray-700">Start date</label>
               <input
                 type="date"
                 value={getDateValue(start)}
@@ -81,7 +81,7 @@ export default function AgentFilterForm({
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-sm text-gray-700">End date</label>
+              <label htmlFor="end-date" className="text-sm text-gray-700">End date</label>
               <input
                 type="date"
                 value={getDateValue(end)}
